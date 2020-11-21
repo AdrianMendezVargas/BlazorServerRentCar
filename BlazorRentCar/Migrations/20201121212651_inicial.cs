@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace BlazorRentCar.Data.Migrations
+namespace BlazorRentCar.Migrations
 {
-    public partial class Initial : Migration
+    public partial class inicial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -41,27 +41,11 @@ namespace BlazorRentCar.Data.Migrations
                     UserName = table.Column<string>(maxLength: 256, nullable: true),
                     Nombre = table.Column<string>(maxLength: 30, nullable: false),
                     Apellido = table.Column<string>(maxLength: 30, nullable: false),
-                    Email = table.Column<string>(maxLength: 256, nullable: false),
-                    Contraseña = table.Column<string>(maxLength: 50, nullable: false)
+                    Email = table.Column<string>(maxLength: 256, nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Estudiantes",
-                columns: table => new
-                {
-                    EstudianteId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombres = table.Column<string>(nullable: false),
-                    Semestre = table.Column<int>(nullable: false),
-                    Nacionalidad = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Estudiantes", x => x.EstudianteId);
                 });
 
             migrationBuilder.CreateTable(
@@ -226,9 +210,6 @@ namespace BlazorRentCar.Data.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
-
-            migrationBuilder.DropTable(
-                name: "Estudiantes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
