@@ -16,7 +16,6 @@ using Microsoft.Extensions.Hosting;
 using BlazorRentCar.Areas.Identity;
 using BlazorRentCar.Data;
 using Blazored.Toast;
-using BlazorRentCar.BLL;
 using BlazorRentCar.Models;
 
 namespace BlazorRentCar {
@@ -38,9 +37,7 @@ namespace BlazorRentCar {
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider , RevalidatingIdentityAuthenticationStateProvider<Usuarios>>();
-            services.AddSingleton<WeatherForecastService>();
             services.AddBlazoredToast();
-            services.AddTransient<EstudiantesBLL>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

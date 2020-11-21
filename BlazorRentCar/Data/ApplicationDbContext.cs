@@ -9,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 namespace BlazorRentCar.Data {
     public class ApplicationDbContext : IdentityDbContext<Usuarios, IdentityRole<string>, string> {
 
-        public DbSet<Estudiante> Estudiantes { get; set; }
         public DbSet<Usuarios> Usuarios { get; set; }
        
 
