@@ -46,11 +46,13 @@ namespace BlazorRentCar.Areas.Identity.Pages.Account
 
         public class InputModel : Usuarios
         {
-            
+            [Required]
+            [DataType(DataType.Password)]
+            public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Confirm password")]
-            [Compare("Contraseña", ErrorMessage = "The password and confirmation password do not match.")]
+            [Display(Name = "Confirma la contraseña")]
+            [Compare("Password" , ErrorMessage = "Las contraseñas no coinciden")]
             public string ConfirmPassword { get; set; }
         }
 
@@ -66,15 +68,14 @@ namespace BlazorRentCar.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new Usuarios {
-                    Id = Input.UserName,
-                    UserName = Input.UserName,
-                    Email = Input.Email,
-                    Nombre = Input.Nombre,
-                    Apellido = Input.Apellido,
-                    Contraseña = Input.Contraseña,
+                var identityUser = new IdentityUser();
+                var user = new Usuarios(identityUser) {
+                    UserName = Input.UserName ,
+                    Email = Input.Email ,
+                    Nombre = Input.Nombre ,
+                    Apellido = Input.Apellido
                 };
-                var result = await _userManager.CreateAsync(user, user.Contraseña);
+                var result = await _userManager.CreateAsync(user , Input.Password);
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
