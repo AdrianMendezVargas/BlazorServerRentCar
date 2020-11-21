@@ -1,0 +1,182 @@
+﻿@page "/estudiantes"
+
+@inject IToastService toast
+
+<div class="main-header-list">
+    <h2>Lista de estudiante</h2>
+    <button type="button" class="btn btn-success" @onclick="BotonAgregarEstudiante">+ Agregar</button>
+    <div class="filter">
+        <select class="custom-select" @bind="indexSelect">
+            <option value="0">Filtrar por</option>
+            <option value="1">Id</option>
+            <option value="2">Nombre</option>
+            <option value="3">Semestre</option>
+            <option value="4">Nacionalidad</option>
+        </select>
+        <input type="@((indexSelect == 1 || indexSelect == 3) ? "number" : "text")" @bind="criterioDeBusqueda" />
+        <button class="btn btn-outline-primary" @onclick="FiltarEstudiantes">Buscar</button>
+    </div>
+</div>
+
+
+@if (Estudiantes == null || EstudiantesFiltrados == null) {
+    <div class="loading-message">
+        <span>Cargando...</span>
+    </div>
+} else {
+    <table class="table table-hover">
+        <thead class="thead-light">
+            <tr>
+                <th>Id</th>
+                <th>Nombres</th>
+                <th>Semestre</th>
+                <th>Nacionalidad</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var estudiante in EstudiantesFiltrados) {
+                <tr>
+                    <td>@estudiante.EstudianteId</td>
+                    <td>@estudiante.Nombres</td>
+                    <td>@estudiante.Semestre</td>
+                    <td>@estudiante.Nacionalidad</td>
+                    <td><button class="btn btn-warning" @onclick="() => BotonModificarEstudiante(estudiante)">Mas</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@if (MostraDialogoEditor) {
+
+    Title = EsNuevoEstudiante ? "Nuevo Estudiante" : "Modificar Estidiante";
+
+    <Dialogo Title="@Title" OnClose="OcultarDialogo">
+        <Body>
+            <EditForm id="form-estudiantes" Model="estudianteEnModificacion" OnValidSubmit="Guardar">
+                <FieldsEstudiante Estudiante="estudianteEnModificacion" />
+                <DataAnnotationsValidator />
+            </EditForm>
+        </Body>
+        <Footer>
+            <button type="button" disabled="@(!EsNuevoEstudiante)" class="btn btn-warning" @onclick="Nuevo">Nuevo</button>
+            <input type="submit" form="form-estudiantes" class="btn btn-success" value="Guardar" />
+            <button type="button" disabled="@(EsNuevoEstudiante)" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
+        </Footer>
+    </Dialogo>
+}
+
+
+
+@code {
+    [Inject]
+    public EstudiantesBLL EstudiantesBLL { get; set; }
+
+    bool MostraDialogoEditor = false;
+    bool EsNuevoEstudiante;
+    string Title;
+
+    int indexSelect = 0; //indice actual del select
+    string criterioDeBusqueda;
+
+    Estudiante estudianteEnModificacion = new Estudiante();
+
+    public List<Estudiante> Estudiantes { get; set; } = new List<Estudiante>();
+    public List<Estudiante> EstudiantesFiltrados { get; set; } = new List<Estudiante>();
+
+    protected async override Task OnInitializedAsync() {
+        Estudiantes = await EstudiantesBLL.GetEstudiantes();
+        EstudiantesFiltrados = Estudiantes;
+    }
+
+    void BotonModificarEstudiante(Estudiante estudiante) {
+        estudianteEnModificacion = estudiante;
+        EsNuevoEstudiante = false;
+        MostraDialogoEditor = true;
+    }
+
+    void BotonAgregarEstudiante() {
+        Nuevo();
+        EsNuevoEstudiante = true;
+        MostraDialogoEditor = true;
+    }
+
+    async Task OcultarDialogo() {
+        MostraDialogoEditor = false;
+        Estudiantes = await EstudiantesBLL.GetEstudiantes();
+        QuitarFiltros();
+    }
+
+    void QuitarFiltros() {
+        indexSelect = 0;
+        criterioDeBusqueda = "";
+        FiltarEstudiantes();
+    }
+
+    void FiltarEstudiantes() {
+
+        if (indexSelect == 0) {//Todos
+
+            EstudiantesFiltrados = Estudiantes.Where(e => true).ToList();
+
+        } else if (indexSelect == 1) {//Id
+
+            if (int.TryParse(criterioDeBusqueda , out int Id)) {
+
+                EstudiantesFiltrados = Estudiantes.Where(e => e.EstudianteId == Id).ToList();
+            }
+
+        } else if (indexSelect == 2) {//Nombre
+
+            EstudiantesFiltrados = Estudiantes.Where(e => e.Nombres.ToLower().Contains(criterioDeBusqueda.ToLower())).ToList();
+
+        } else if (indexSelect == 3) {//Semestre
+
+            if (int.TryParse(criterioDeBusqueda , out int semestre)) {
+
+                EstudiantesFiltrados = Estudiantes.Where(e => e.Semestre == semestre).ToList();
+            }
+
+        } else if (indexSelect == 4) {//Nacionalidad
+
+            EstudiantesFiltrados = Estudiantes.Where(e => e.Nacionalidad.ToLower().Contains(criterioDeBusqueda.ToLower())).ToList();
+
+        }
+
+    }
+
+    void Nuevo() {
+        estudianteEnModificacion = new Estudiante();
+    }
+    async Task Guardar() {
+
+
+        bool guardo;
+
+        guardo = await EstudiantesBLL.Guardar(estudianteEnModificacion);
+
+        if (guardo) {
+            toast.ShowSuccess("Guardado ");
+            Nuevo();
+            await OcultarDialogo();
+        } else
+            toast.ShowError("Error al guardar");
+    }
+
+    async Task Eliminar() {
+        bool eliminado;
+
+        eliminado = await EstudiantesBLL.Eliminar(estudianteEnModificacion.EstudianteId);
+
+        if (eliminado) {
+            toast.ShowSuccess("Eliminado");
+            Nuevo();
+            await OcultarDialogo();
+        } else
+            toast.ShowError("Error al eliminar");
+    }
+
+
+
+}
