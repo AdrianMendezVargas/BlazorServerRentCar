@@ -83,7 +83,7 @@ namespace BlazorRentCar.Areas.Identity.Pages.Account {
                     _logger.LogWarning("User account locked out.");
                     return RedirectToPage("./Lockout");
                 } else {
-                    ModelState.AddModelError(string.Empty , "Invalid login attempt.");
+                    ModelState.AddModelError(string.Empty , "Datos incorrectos.");
                     return Page();
                 }
             }

@@ -5,7 +5,7 @@
 }
 
 <div class="auth-container m-1">
-    <div class="card shadow-lg p-3">
+    <div class="card shadow-lg p-3 mb-3">
         <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
             <h4>Crea una cuenta nueva.</h4>
             <hr />
@@ -47,10 +47,9 @@
                 <input asp-for="Input.Apellido" placeholder="Apellidos" class="form-control" />
             </div>
             <hr />
-            <div class="form-group input-group">
-                <button type="submit" class="btn btn-primary text-right">Registrarse</button>
+            <div class="text-right pr-3">
+                <button type="submit" class="btn btn-info">Registrarse<i class="oi oi-arrow-circle-right ml-2"></i></button>
             </div>
-            
         </form>
     </div>
     @*<div class="col-md-6 col-md-offset-2">
