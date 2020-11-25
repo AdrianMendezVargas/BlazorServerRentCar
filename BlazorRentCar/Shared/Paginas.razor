@@ -4,7 +4,7 @@
             <li @onclick="@(() => PaginaSeleccionadaInterno(pagina))"
                 style="cursor: pointer;"
                 class="page-item @(pagina.Habilitada ? null : "disabled")">
-                <span class="btn @(pagina.Activa ? "btn-dark" : "btn-default")" href="#">@pagina.Texto</span>
+                <span class="btn @(pagina.Activa ? "btn-dark" : "btn-default")">@pagina.Texto</span>
             </li>
         }
         <li class="ml-3 mr-1 btn" style="cursor: unset;">Cantidad por pagina:</li>
