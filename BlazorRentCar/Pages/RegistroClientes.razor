@@ -63,9 +63,9 @@
                     <tfoot>
                         <tr>
                             <th colspan="5">
-                                <Paginas PaginaSeleccionada="(int  pagina)=> PaginaSeleccionada(pagina)"
+                                <Paginas CambioPaginacion="CambioPaginacion"
                                          PaginasTotales="PaginasTotales"
-                                         PaginaActual="PaginacionActual.Pagina"
+                                         Paginacion="PaginacionActual"
                                          Radio="2" />
                             </th>
                         </tr>
@@ -123,7 +123,7 @@
         await RefrescarTabla();
     }
 
-    async Task OnPageChanged() {
+    async Task CambioPaginacion() {
         await RefrescarTabla();
     }
 
@@ -138,10 +138,6 @@
         PaginasTotales = paginasTotalesTemp < 1 ? 1 : paginasTotalesTemp;
     }
 
-    private async Task PaginaSeleccionada(int pagina) {
-        PaginacionActual.Pagina = pagina;
-        await RefrescarTabla();
-    }
 
     void ModificarCliente(Cliente cliente) {
         clienteEnModificacion = cliente;
@@ -213,6 +209,7 @@
         } else if (indexSelect == 2) {//Nombre
             expressionFiltrado = e => e.Nombres.ToLower().Contains(criterioDeBusqueda.ToLower());
         }
+        PaginacionActual.Pagina = 1;
         await RefrescarTabla();
         StateHasChanged();
     }
