@@ -4,14 +4,16 @@ using BlazorRentCar.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlazorRentCar.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201124235557_Seeding20Clientes")]
+    partial class Seeding20Clientes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -286,126 +288,6 @@ namespace BlazorRentCar.Migrations
                         new
                         {
                             ClienteId = 20,
-                            Apellidos = "Perez",
-                            Cedula = "",
-                            Direccion = "",
-                            Email = "",
-                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Nombres = "Juan20",
-                            Telefono = ""
-                        },
-                        new
-                        {
-                            ClienteId = 21,
-                            Apellidos = "Perez",
-                            Cedula = "",
-                            Direccion = "",
-                            Email = "",
-                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Nombres = "Juan20",
-                            Telefono = ""
-                        },
-                        new
-                        {
-                            ClienteId = 22,
-                            Apellidos = "Perez",
-                            Cedula = "",
-                            Direccion = "",
-                            Email = "",
-                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Nombres = "Juan20",
-                            Telefono = ""
-                        },
-                        new
-                        {
-                            ClienteId = 23,
-                            Apellidos = "Perez",
-                            Cedula = "",
-                            Direccion = "",
-                            Email = "",
-                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Nombres = "Juan20",
-                            Telefono = ""
-                        },
-                        new
-                        {
-                            ClienteId = 24,
-                            Apellidos = "Perez",
-                            Cedula = "",
-                            Direccion = "",
-                            Email = "",
-                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Nombres = "Juan20",
-                            Telefono = ""
-                        },
-                        new
-                        {
-                            ClienteId = 25,
-                            Apellidos = "Perez",
-                            Cedula = "",
-                            Direccion = "",
-                            Email = "",
-                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Nombres = "Juan20",
-                            Telefono = ""
-                        },
-                        new
-                        {
-                            ClienteId = 26,
-                            Apellidos = "Perez",
-                            Cedula = "",
-                            Direccion = "",
-                            Email = "",
-                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Nombres = "Juan20",
-                            Telefono = ""
-                        },
-                        new
-                        {
-                            ClienteId = 27,
-                            Apellidos = "Perez",
-                            Cedula = "",
-                            Direccion = "",
-                            Email = "",
-                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Nombres = "Juan20",
-                            Telefono = ""
-                        },
-                        new
-                        {
-                            ClienteId = 28,
-                            Apellidos = "Perez",
-                            Cedula = "",
-                            Direccion = "",
-                            Email = "",
-                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Nombres = "Juan20",
-                            Telefono = ""
-                        },
-                        new
-                        {
-                            ClienteId = 29,
-                            Apellidos = "Perez",
-                            Cedula = "",
-                            Direccion = "",
-                            Email = "",
-                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
-                            Nombres = "Juan20",
-                            Telefono = ""
-                        },
-                        new
-                        {
-                            ClienteId = 30,
                             Apellidos = "Perez",
                             Cedula = "",
                             Direccion = "",

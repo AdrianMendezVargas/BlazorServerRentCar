@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorRentCar.Migrations
 {
     [DbContext(typeof(Contexto))]
-    [Migration("20201121212651_inicial")]
-    partial class inicial
+    [Migration("20201124232838_MoreSeedingData")]
+    partial class MoreSeedingData
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,200 @@ namespace BlazorRentCar.Migrations
                 .HasAnnotation("ProductVersion", "3.1.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("BlazorRentCar.Models.Cliente", b =>
+                {
+                    b.Property<int>("ClienteId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Apellidos")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Cedula")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direccion")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FechaNacimiento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaRegistro")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nombres")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ClienteId");
+
+                    b.ToTable("Clientes");
+
+                    b.HasData(
+                        new
+                        {
+                            ClienteId = 1,
+                            Apellidos = "Mendez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Adrian1",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 2,
+                            Apellidos = "Mendez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Adrian2",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 3,
+                            Apellidos = "Mendez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Adrian3",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 4,
+                            Apellidos = "Mendez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Adrian4",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 5,
+                            Apellidos = "Mendez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Adrian5",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 6,
+                            Apellidos = "Perez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Juan6",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 7,
+                            Apellidos = "Perez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Juan7",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 8,
+                            Apellidos = "Perez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Juan8",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 9,
+                            Apellidos = "Perez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Juan9",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 10,
+                            Apellidos = "Perez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Juan10",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 11,
+                            Apellidos = "Perez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Juan11",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 12,
+                            Apellidos = "Perez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Juan12",
+                            Telefono = ""
+                        },
+                        new
+                        {
+                            ClienteId = 13,
+                            Apellidos = "Perez",
+                            Cedula = "",
+                            Direccion = "",
+                            Email = "",
+                            FechaNacimiento = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            FechaRegistro = new DateTime(2020, 11, 24, 0, 0, 0, 0, DateTimeKind.Local),
+                            Nombres = "Juan13",
+                            Telefono = ""
+                        });
+                });
 
             modelBuilder.Entity("BlazorRentCar.Models.Usuarios", b =>
                 {
