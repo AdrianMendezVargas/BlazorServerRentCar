@@ -18,25 +18,22 @@
     }
 
     private List<Pagina> PaginasVisibles { get; set; } = new List<Pagina>();
-    static int PaginaAntesDelCambio = 0;
     private int _cantPaginasVisibles;
 
     [Parameter] public Paginacion Paginacion { get; set; }
     [Parameter] public int CantPaginasVisibles { get; set; } = 5;
     [Parameter] public EventCallback CambiarPagina { get; set; }
-    [Parameter] public IBusinessLogic BLL { get; set; }
+    [Parameter] public int RegistrosTotales { get; set; }
     int PaginasTotales = -1;
 
-    protected override async Task OnInitializedAsync() {
-        PaginaAntesDelCambio = Paginacion.Pagina;
-        await GetPaginasTotales();
+    protected override void  OnInitialized() {
+        GetPaginasTotales();
         CrearPaginasVisibles();
         _cantPaginasVisibles = PaginasVisibles.Count;
     }
 
-    async Task GetPaginasTotales() {
-        double clientesTotales = await BLL.Contar();
-        int paginasTotalesTemp = (int) Math.Ceiling(clientesTotales / Paginacion.CantidadPorPagina);
+    void GetPaginasTotales() {
+        int paginasTotalesTemp = (int) Math.Ceiling((double)RegistrosTotales / Paginacion.CantidadPorPagina);
         PaginasTotales = paginasTotalesTemp < 1 ? 1 : paginasTotalesTemp;
     }
 
@@ -85,9 +82,13 @@
         if (_cantPaginasVisibles % 2 != 0) { //Impar
             ReordenarPaginasImpares();
         } else { //Par
-            ReordenarPaginasPares();
+            _cantPaginasVisibles--;
+            ReordenarPaginasImpares();
         }
-        PaginaAntesDelCambio = Paginacion.Pagina;
+    }
+
+    void ReordenarPaginasPares() {
+        throw new NotImplementedException();
     }
 
     void ReordenarPaginasImpares() {
@@ -119,8 +120,5 @@
         }
     }
 
-    void ReordenarPaginasPares() {
-        throw new NotImplementedException();
-    }
 
 }

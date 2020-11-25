@@ -7,24 +7,32 @@ namespace BlazorRentCar.Models {
     public class Cliente {
         [Key]
         public int ClienteId { get; set; }
+
+        [Required(ErrorMessage ="Este campo es requerido")]
         public string Nombres { get; set; }
+
+        [Required(ErrorMessage = "Este campo es requerido")]
         public string Apellidos { get; set; }
-        public string Cedula { get; set; }
+
+        [Required(ErrorMessage = "Este campo es requerido")]
         public string Direccion { get; set; }
+
+        [Required(ErrorMessage = "Este campo es requerido")]
+        [EmailAddress(ErrorMessage = "Este email no es valido")]
         public string Email { get; set; }
+
+        [Required(ErrorMessage = "Este campo es requerido")]
+        [Phone(ErrorMessage = "El teléfono es invalido")]
         public string Telefono { get; set; }
-        public DateTime FechaNacimiento { get; set; }
         public DateTime FechaRegistro { get; set; }
 
         public Cliente() {
             ClienteId = 0;
             Nombres = "";
             Apellidos = "";
-            Cedula = "";
             Email = "";
             Direccion = "";
-            FechaNacimiento = DateTime.Now.Date;
-            FechaRegistro = DateTime.Now.Date;
+            FechaRegistro = DateTime.Today;
             Telefono = "";
         }
 

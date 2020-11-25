@@ -29,6 +29,11 @@
     align-items: center;
 }
 
+.validation-message {
+    color: red;
+    margin-left: 15px;
+}
+
 .auth-container {
     height: auto;
     min-height: 80vh;

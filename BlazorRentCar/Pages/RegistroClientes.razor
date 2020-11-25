@@ -43,26 +43,31 @@
                     <thead class="thead-light">
                         <tr>
                             <th>Cliente Id</th>
-                            <th>Nombres</th>
-                            <th>Balance</th>
+                            <th>Nombre</th>
+                            <th>Apellido</th>
+                            <th>Email</th>
                             <th></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var cliente in Clientes) {
-                            <tr>
-                                <td>@cliente.ClienteId</td>
-                                <td>@cliente.Nombres</td>
-                                <td>@cliente.Apellidos</td>
-                                <td><button @onclick="()=>ModificarCliente(cliente)" class="btn btn-outline-dark">Ver</button></td>
-                            </tr>
+                        <tr>
+                            <td>@cliente.ClienteId</td>
+                            <td>@cliente.Nombres</td>
+                            <td>@cliente.Apellidos</td>
+                            <td>@cliente.Email</td>
+                            <td><button @onclick="()=>ModificarCliente(cliente)" class="btn btn-outline-dark">Ver</button></td>
+                        </tr>
                         }
                     </tbody>
                     <tfoot>
-                        <tr class="text-center">
-                            <PaginacionComponent BLL="ClientesBLL"
-                                                 Paginacion="PaginacioActual"
-                                                 CambiarPagina="()=>OnPageChanged()"/>
+                        <tr>
+                            <th colspan="5">
+                                <Paginas PaginaSeleccionada="(int  pagina)=> PaginaSeleccionada(pagina)"
+                                         PaginasTotales="PaginasTotales"
+                                         PaginaActual="PaginacionActual.Pagina"
+                                         Radio="2" />
+                            </th>
                         </tr>
                     </tfoot>
                 </table>
@@ -101,13 +106,16 @@
     bool EsNuevoCliente = false;
     string Title;
 
+    int ClientesTotalesFiltrados;
+    Expression<Func<Cliente , bool>> expressionFiltrado = c => true;
+    int PaginasTotales;
 
     int indexSelect = 0; //indice actual del select
     string criterioDeBusqueda;
 
     Cliente clienteEnModificacion = new Cliente();
 
-    public Paginacion PaginacioActual { get; set; } = new Paginacion();
+    Paginacion PaginacionActual = new Paginacion();
 
     public List<Cliente> Clientes { get; set; }
 
@@ -120,7 +128,19 @@
     }
 
     async Task RefrescarTabla() {
-        Clientes = await ClientesBLL.GetClientes(c => true, PaginacioActual);
+        Clientes = await ClientesBLL.GetClientes(expressionFiltrado, PaginacionActual);
+        ClientesTotalesFiltrados = await ClientesBLL.Contar(expressionFiltrado);
+        GetPaginasTotales();
+    }
+
+    void GetPaginasTotales() {
+        int paginasTotalesTemp = (int) Math.Ceiling((double) ClientesTotalesFiltrados / PaginacionActual.CantidadPorPagina);
+        PaginasTotales = paginasTotalesTemp < 1 ? 1 : paginasTotalesTemp;
+    }
+
+    private async Task PaginaSeleccionada(int pagina) {
+        PaginacionActual.Pagina = pagina;
+        await RefrescarTabla();
     }
 
     void ModificarCliente(Cliente cliente) {
@@ -181,21 +201,20 @@
     async Task FiltarClientes() {
 
         if (indexSelect == 0) {//Todos
-
-            Clientes = await ClientesBLL.GetClientes(c => true , PaginacioActual);
+            expressionFiltrado = c => true;
 
         } else if (indexSelect == 1) {//Id
 
             if (int.TryParse(criterioDeBusqueda , out int Id)) {
-
-                Clientes = await ClientesBLL.GetClientes(c => c.ClienteId == Id , PaginacioActual);
+                expressionFiltrado = c => c.ClienteId == Id;
+            } else {
+                expressionFiltrado = c => true;
             }
-
         } else if (indexSelect == 2) {//Nombre
-
-            Clientes = await ClientesBLL.GetClientes(e => e.Nombres.ToLower().Contains(criterioDeBusqueda.ToLower()) , PaginacioActual);
+            expressionFiltrado = e => e.Nombres.ToLower().Contains(criterioDeBusqueda.ToLower());
         }
-
+        await RefrescarTabla();
+        StateHasChanged();
     }
 
 

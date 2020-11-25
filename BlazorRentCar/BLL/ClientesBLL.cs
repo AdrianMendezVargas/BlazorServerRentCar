@@ -12,7 +12,7 @@ using System.Linq.Expressions;
 using BlazorRentCar.Models.Interfaces;
 
 namespace BlazorRentCar.BLL {
-    public class ClientesBLL : IBusinessLogic {
+    public class ClientesBLL : IBusinessLogic<Cliente> {
 
         private readonly Contexto _contexto;
 
@@ -37,7 +37,6 @@ namespace BlazorRentCar.BLL {
             } catch (Exception) {
                 throw;
             } finally {
-                await _contexto.DisposeAsync();
             }
 
             return paso;
@@ -55,7 +54,6 @@ namespace BlazorRentCar.BLL {
 
                 throw;
             } finally {
-                await _contexto.DisposeAsync();
             }
             return paso;
         }
@@ -72,7 +70,6 @@ namespace BlazorRentCar.BLL {
             } catch (Exception) {
                 throw;
             } finally {
-                await _contexto.DisposeAsync();
             }
 
             return paso;
@@ -88,7 +85,6 @@ namespace BlazorRentCar.BLL {
             } catch (Exception) {
                 throw;
             } finally {
-                await _contexto.DisposeAsync();
             }
 
             return cliente;
@@ -103,7 +99,6 @@ namespace BlazorRentCar.BLL {
             } catch (Exception) {
                 throw;
             } finally {
-                await _contexto.DisposeAsync();
             }
 
             return encontrado;
@@ -118,9 +113,9 @@ namespace BlazorRentCar.BLL {
 
         }
 
-        public async Task<int> Contar() {
-            return await _contexto.Clientes.AsQueryable().CountAsync();
-        } 
+        public async Task<int> Contar(Expression<Func<Cliente , bool>> expression) {
+            return await _contexto.Clientes.AsQueryable().Where(expression).CountAsync();
+        }
 
     }
 }

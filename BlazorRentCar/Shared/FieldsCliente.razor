@@ -26,12 +26,34 @@
     
 </div>
 <div class="form-field">
-    <label class="col-form-label">Semestre: </label>
+    <label class="col-form-label">Apellidos: </label>
     <div>
         <InputText class="form-control" @bind-Value="Cliente.Apellidos"/><br/>
         <ValidationMessage For="()=>Cliente.Apellidos"/>
     </div>
 </div>
+<div class="form-field">
+    <label class="col-form-label">Direcci&oacute;n: </label>
+    <div>
+        <InputText class="form-control" @bind-Value="Cliente.Direccion" /><br />
+        <ValidationMessage For="()=>Cliente.Direccion" />
+    </div>
+</div>
+<div class="form-field">
+    <label class="col-form-label">Email: </label>
+    <div>
+        <InputText class="form-control" @bind-Value="Cliente.Email" /><br />
+        <ValidationMessage For="()=>Cliente.Email" />
+    </div>
+</div>
+<div class="form-field">
+    <label class="col-form-label">Tel&eacute;fono: </label>
+    <div>
+        <InputText class="form-control" @bind-Value="Cliente.Telefono" /><br />
+        <ValidationMessage For="()=>Cliente.Telefono" />
+    </div>
+</div>
+
 
 @code {
     [Parameter] public Cliente Cliente { get; set; }
