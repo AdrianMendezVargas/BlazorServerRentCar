@@ -17,6 +17,7 @@ using BlazorRentCar.Areas.Identity;
 using BlazorRentCar.Data;
 using Blazored.Toast;
 using BlazorRentCar.Models;
+using BlazorRentCar.BLL;
 
 namespace BlazorRentCar {
     public class Startup {
@@ -29,15 +30,17 @@ namespace BlazorRentCar {
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services) {
-            services.AddDbContext<ApplicationDbContext>(options =>
+            services.AddDbContext<Contexto>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<Usuarios>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<Contexto>();
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider , RevalidatingIdentityAuthenticationStateProvider<Usuarios>>();
+            
             services.AddBlazoredToast();
+            services.AddTransient<ClientesBLL>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,0 +1,203 @@
+﻿@page "/clientes"
+@inject IToastService toast
+
+
+<div class="container mt-3">
+    <div class="card shadow-lg">
+        <div class="card-header bg-dark">
+            <div class="form-row">
+                <div class="col-sm">
+                    <h3 class="text-light"><i class="oi oi-person mr-3" />Clientes</h3>
+                </div>
+                <div class="col-sm">
+                    <button class="btn btn-dark border-light" @onclick="AgregarCliente">
+                        <i class="oi oi-plus" />
+                        Agregar
+                    </button>
+                </div>
+                <div class="col-sm">
+                    <select @bind="indexSelect" class="custom-select">
+                        <option value="0">Filtrar por</option>
+                        <option value="1">Id</option>
+                        <option value="2">Nombre</option>
+                    </select>
+                </div>
+                <div class="col-sm">
+                    <input class="form-control w-100" type="@(indexSelect == 1 ? "number" : "text")" @bind="criterioDeBusqueda" />
+                </div>
+                <div class="col-sm text-center">
+                    <button class="btn btn-dark border-light" @onclick="FiltarClientes">
+                        <i class="oi oi-magnifying-glass" />
+                        Buscar
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            @if (Clientes == null) {
+                <div>
+                    <h4>Cargando...</h4>
+                </div>
+            } else {
+                <table class="table table-hover">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Cliente Id</th>
+                            <th>Nombres</th>
+                            <th>Balance</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var cliente in Clientes) {
+                            <tr>
+                                <td>@cliente.ClienteId</td>
+                                <td>@cliente.Nombres</td>
+                                <td>@cliente.Apellidos</td>
+                                <td><button @onclick="()=>ModificarCliente(cliente)" class="btn btn-outline-dark">Ver</button></td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr class="text-center">
+                            <PaginacionComponent BLL="ClientesBLL"
+                                                 Paginacion="PaginacioActual"
+                                                 CambiarPagina="()=>OnPageChanged()"/>
+                        </tr>
+                    </tfoot>
+                </table>
+            }
+        </div>
+    </div>
+</div>
+
+
+
+@if (MostraDialogoEditor) {
+    Title = EsNuevoCliente ? "Nuevo Cliente" : "Modificar Cliente";
+
+    <Dialogo Title="@Title" OnClose="OcultarDialogo">
+        <Body>
+            <EditForm id="form-clientes" Model="clienteEnModificacion" OnValidSubmit="Guardar">
+                <FieldsCliente Cliente="clienteEnModificacion"/>
+                <DataAnnotationsValidator />
+            </EditForm>
+        </Body>
+        <Footer>
+            <button type="button" disabled="@(!EsNuevoCliente)" class="btn btn-warning" @onclick="Nuevo">Nuevo</button>
+            <input type="submit" form="form-clientes" class="btn btn-success" value="Guardar" />
+            <button type="button" disabled="@(EsNuevoCliente)" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
+        </Footer>
+    </Dialogo>
+}
+
+
+
+@code {
+    [Inject]
+    public ClientesBLL ClientesBLL { get; set; }
+
+    bool MostraDialogoEditor = false;
+    bool EsNuevoCliente = false;
+    string Title;
+
+
+    int indexSelect = 0; //indice actual del select
+    string criterioDeBusqueda;
+
+    Cliente clienteEnModificacion = new Cliente();
+
+    public Paginacion PaginacioActual { get; set; } = new Paginacion();
+
+    public List<Cliente> Clientes { get; set; }
+
+    protected async override Task OnInitializedAsync() {
+        await RefrescarTabla();
+    }
+
+    async Task OnPageChanged() {
+        await RefrescarTabla();
+    }
+
+    async Task RefrescarTabla() {
+        Clientes = await ClientesBLL.GetClientes(c => true, PaginacioActual);
+    }
+
+    void ModificarCliente(Cliente cliente) {
+        clienteEnModificacion = cliente;
+        EsNuevoCliente = false;
+        MostraDialogoEditor = true;
+    }
+
+    void AgregarCliente() {
+        clienteEnModificacion = new Cliente();
+        EsNuevoCliente = true;
+        MostraDialogoEditor = true;
+    }
+
+    async Task OcultarDialogo() {
+        MostraDialogoEditor = false;
+        await RefrescarTabla();
+        QuitarFiltros();
+    }
+
+    void QuitarFiltros() {
+        indexSelect = 0;
+        criterioDeBusqueda = "";
+        _ = FiltarClientes();
+    }
+
+    void Nuevo() {
+        clienteEnModificacion = new Cliente();
+    }
+    async Task Guardar() {
+
+        bool guardo;
+
+        guardo = await ClientesBLL.Guardar(clienteEnModificacion);
+
+        if (guardo) {
+            toast.ShowSuccess("Guardado ");
+            Nuevo();
+            await OcultarDialogo();
+        } else
+            toast.ShowError("Error al guardar");
+
+    }
+
+    async Task Eliminar() {
+        bool eliminado;
+
+        eliminado = await ClientesBLL.Eliminar(clienteEnModificacion.ClienteId);
+
+        if (eliminado) {
+            toast.ShowSuccess("Eliminado");
+            Nuevo();
+            await OcultarDialogo();
+        } else
+            toast.ShowError("Error al eliminar");
+    }
+
+    async Task FiltarClientes() {
+
+        if (indexSelect == 0) {//Todos
+
+            Clientes = await ClientesBLL.GetClientes(c => true , PaginacioActual);
+
+        } else if (indexSelect == 1) {//Id
+
+            if (int.TryParse(criterioDeBusqueda , out int Id)) {
+
+                Clientes = await ClientesBLL.GetClientes(c => c.ClienteId == Id , PaginacioActual);
+            }
+
+        } else if (indexSelect == 2) {//Nombre
+
+            Clientes = await ClientesBLL.GetClientes(e => e.Nombres.ToLower().Contains(criterioDeBusqueda.ToLower()) , PaginacioActual);
+        }
+
+    }
+
+
+
+}

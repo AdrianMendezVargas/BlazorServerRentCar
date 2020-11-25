@@ -1,0 +1,126 @@
+﻿@if (PaginasTotales > 0) {
+    <div class="d-flex d-inline">
+        @if (Paginacion.Pagina > 1) {
+            <button class="btn btn-dark" @onclick="AnteriorClicked">Anterior</button>
+        }
+        @foreach (var pagina in PaginasVisibles) {
+            <button class="btn btn@(Paginacion.Pagina == pagina.NumeroPagina ? "" : "-outline")-dark" @onclick="()=> PaginaClicked(pagina.NumeroPagina)">@pagina.NumeroPagina</button>
+        }
+        @if (Paginacion.Pagina < PaginasTotales) {
+            <button class="btn btn-dark" @onclick="SiguienteClicked">Siguiente</button>
+        }
+    </div>
+}
+
+@code {
+    private class Pagina {
+        public int NumeroPagina { get; set; }
+    }
+
+    private List<Pagina> PaginasVisibles { get; set; } = new List<Pagina>();
+    static int PaginaAntesDelCambio = 0;
+    private int _cantPaginasVisibles;
+
+    [Parameter] public Paginacion Paginacion { get; set; }
+    [Parameter] public int CantPaginasVisibles { get; set; } = 5;
+    [Parameter] public EventCallback CambiarPagina { get; set; }
+    [Parameter] public IBusinessLogic BLL { get; set; }
+    int PaginasTotales = -1;
+
+    protected override async Task OnInitializedAsync() {
+        PaginaAntesDelCambio = Paginacion.Pagina;
+        await GetPaginasTotales();
+        CrearPaginasVisibles();
+        _cantPaginasVisibles = PaginasVisibles.Count;
+    }
+
+    async Task GetPaginasTotales() {
+        double clientesTotales = await BLL.Contar();
+        int paginasTotalesTemp = (int) Math.Ceiling(clientesTotales / Paginacion.CantidadPorPagina);
+        PaginasTotales = paginasTotalesTemp < 1 ? 1 : paginasTotalesTemp;
+    }
+
+    void CrearPaginasVisibles() {
+        PaginasVisibles.Clear();
+        if (CantPaginasVisibles > PaginasTotales) {
+            for (int i = 1 ; i <= PaginasTotales ; i++) {
+                AgregarPaginaVisible(i);
+            }
+        } else {
+            for (int i = 1 ; i <= CantPaginasVisibles ; i++) {
+                AgregarPaginaVisible(i);
+            }
+        }
+    }
+
+    void AgregarPaginaVisible(int numeroPagina) => PaginasVisibles.Add(new Pagina { NumeroPagina = numeroPagina });
+
+    void PaginaClicked(int paginaClicked) {
+        if (paginaClicked != Paginacion.Pagina) {
+            Paginacion.Pagina = paginaClicked;
+            CambiarPagina.InvokeAsync(null);
+        }
+        ReordenarPaginasVisibles();
+    }
+
+    void AnteriorClicked() {
+        if (Paginacion.Pagina > 1) {
+            Paginacion.Pagina--;
+            CambiarPagina.InvokeAsync(null);
+        }
+        ReordenarPaginasVisibles();
+    }
+
+    void SiguienteClicked() {
+        if (Paginacion.Pagina < PaginasTotales) {
+            Paginacion.Pagina++;
+            CambiarPagina.InvokeAsync(null);
+        }
+        ReordenarPaginasVisibles();
+    }
+
+    void ReordenarPaginasVisibles() {
+
+        PaginasVisibles.Clear();
+        if (_cantPaginasVisibles % 2 != 0) { //Impar
+            ReordenarPaginasImpares();
+        } else { //Par
+            ReordenarPaginasPares();
+        }
+        PaginaAntesDelCambio = Paginacion.Pagina;
+    }
+
+    void ReordenarPaginasImpares() {
+        int paginasAlrededor = (_cantPaginasVisibles - 1) / 2;
+        int numeroPaginaInicio = Paginacion.Pagina - paginasAlrededor;
+
+        int numeroPaginaFinal = Paginacion.Pagina + paginasAlrededor;
+
+        if (Paginacion.Pagina == 1) {
+            numeroPaginaInicio = 1;
+            numeroPaginaFinal += paginasAlrededor;
+
+        } else if (Paginacion.Pagina == PaginasTotales) {
+            numeroPaginaFinal -= paginasAlrededor;
+            numeroPaginaInicio -= paginasAlrededor;
+        }
+
+        if (numeroPaginaInicio < 1) {
+            numeroPaginaInicio = 1;
+            numeroPaginaFinal++;
+        }
+        if (numeroPaginaFinal > PaginasTotales) {
+            numeroPaginaFinal = PaginasTotales;
+            numeroPaginaInicio--;
+        }
+
+        for (int i = numeroPaginaInicio ; i <= numeroPaginaFinal ; i++) {
+            AgregarPaginaVisible(i);
+        }
+    }
+
+    void ReordenarPaginasPares() {
+        throw new NotImplementedException();
+    }
+
+}

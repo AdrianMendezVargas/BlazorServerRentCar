@@ -4,14 +4,16 @@ using BlazorRentCar.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlazorRentCar.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201125035530_Seeding30Clientes")]
+    partial class Seeding30Clientes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
