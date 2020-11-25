@@ -33,7 +33,7 @@ namespace BlazorRentCar.Models
         public int CantidadVehiculos { get; set; }
        
         [ForeignKey("VentaId")]
-        public virtual List<VentasVehiculoDetalle> VentaProductosDetalle { get; set; } = new List<VentasVehiculoDetalle>();
+        public virtual List<VentasVehiculoDetalle> VentaDetalle { get; set; } = new List<VentasVehiculoDetalle>();
 
 
 
