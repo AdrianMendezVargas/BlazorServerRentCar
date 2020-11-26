@@ -10,6 +10,8 @@ namespace BlazorRentCar.Models {
     {
         [Key]
         public int VehiculoId { get; set; }
+        [Required(ErrorMessage = "Es obligatorio asignarle al vehiculo un importador")]
+        [ForeignKey("ImportadorId")]
 
         public int ImportadorId { get; set; }
         [Required(ErrorMessage = "Es obligatorio introducir la matricula")]
