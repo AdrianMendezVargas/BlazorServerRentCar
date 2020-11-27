@@ -7,6 +7,8 @@ namespace BlazorRentCar.Models {
     public class Cliente {
         [Key]
         public int ClienteId { get; set; }
+        
+        public string UserName { get; set; }
 
         [Required(ErrorMessage ="Este campo es requerido")]
         public string Nombres { get; set; }
@@ -26,7 +28,8 @@ namespace BlazorRentCar.Models {
         public string Telefono { get; set; }
         public DateTime FechaRegistro { get; set; }
 
-        public Cliente() {
+        public Cliente(string userName) {
+            UserName = userName;
             ClienteId = 0;
             Nombres = "";
             Apellidos = "";

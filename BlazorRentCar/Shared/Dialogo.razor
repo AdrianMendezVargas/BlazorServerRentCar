@@ -23,6 +23,7 @@
     }
 
     .dialog {
+        border-radius: 20px;
         background-color: white;
         box-shadow: 0 0 12px rgba(0,0,0,0.6);
         display: flex;
@@ -48,6 +49,7 @@
     }
 
     .dialog-title {
+        border-radius: 20px 20px 0 0;
         background-color: #444;
         color: #fff2cc;
         padding: 1.3rem 2rem;
@@ -79,14 +81,15 @@
             margin: 0 1.5rem;
         }
 
-    .dialog-buttons {
+    .dialog-footer {
         height: 4rem;
         background-color: #eee;
         text-align: center;
         padding: 0.8rem;
+        border-radius: 0 0 20px 20px;
     }
 
-        .dialog-buttons button, input {
+        .dialog-footer button, input {
             margin: 0px 20px;
         }
 </style>
@@ -99,7 +102,7 @@
         <div class="dialog-body">
             @Body
         </div>
-        <div class="dialog-buttons">
+        <div class="dialog-footer">
             <button type="button" class="btn btn-dark" @onclick="OnClose">Cancelar</button>
             @Footer
         </div>

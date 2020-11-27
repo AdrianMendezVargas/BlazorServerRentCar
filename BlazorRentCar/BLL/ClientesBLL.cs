@@ -10,14 +10,17 @@ using Microsoft.AspNetCore.Mvc;
 using BlazorRentCar.Utilidades;
 using System.Linq.Expressions;
 using BlazorRentCar.Models.Interfaces;
+using BlazorRentCar.ApplicationState;
 
 namespace BlazorRentCar.BLL {
     public class ClientesBLL : IBusinessLogic<Cliente> {
 
         private readonly Contexto _contexto;
+        private readonly AppState _appState;
 
-        public ClientesBLL(Contexto contexto) {
+        public ClientesBLL(Contexto contexto, AppState appState) {
             _contexto = contexto;
+            _appState = appState;
         }
 
         public async Task<bool> Guardar(Cliente cliente) {
@@ -107,14 +110,14 @@ namespace BlazorRentCar.BLL {
         public async Task<List<Cliente>> GetClientes(Expression<Func<Cliente, bool>> expression, Paginacion paginacion) {
             await Task.Delay(01); //Para dar tiempo a renderizar el mensaje de carga
 
-            var queryable = _contexto.Clientes.Where(expression).AsQueryable();
+            var queryable = _contexto.Clientes.AsQueryable().Where(expression).Where(c => c.UserName == _appState.ClaimsPrincipal.Identity.Name);
             var lista = await queryable.Paginar(paginacion).ToListAsync();
             return lista;
 
         }
 
         public async Task<int> Contar(Expression<Func<Cliente , bool>> expression) {
-            return await _contexto.Clientes.AsQueryable().Where(expression).CountAsync();
+            return await _contexto.Clientes.AsQueryable().Where(expression).Where(c => c.UserName == _appState.ClaimsPrincipal.Identity.Name).CountAsync();
         }
 
     }

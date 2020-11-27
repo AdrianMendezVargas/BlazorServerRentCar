@@ -84,9 +84,10 @@
 </div>
 
 <BlazoredToasts Position="ToastPosition.BottomRight"
-                Timeout="5"
+                Timeout="3"
                 IconType="IconType.FontAwesome"
                 SuccessClass="success-toast-override"
+                ShowProgressBar="true"
                 SuccessIcon="fa fa-check"
                 ErrorIcon="fa fa-times"
                 InfoIcon="fa fa-info"
@@ -94,9 +95,6 @@
 
 @code{
 
-    public static string NombreUsuario { get; set; }
 
-    public static void AsignarUsuario(string nombre) {
-        NombreUsuario = nombre;
-    }
+    public static string NombreUsuario { get; set; }
 }
