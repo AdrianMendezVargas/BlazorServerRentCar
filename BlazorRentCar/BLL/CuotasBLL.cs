@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using BlazorRentCar.Utilidades;
 
 namespace BlazorRentCar.BLL
 {
@@ -112,22 +113,19 @@ namespace BlazorRentCar.BLL
 
         }
 
-        public List<Cuotas> GetList(Expression<Func<Cuotas, bool>> criterio)
+        public async Task<List<Cuotas>> GetCuotas(Expression<Func<Cuotas, bool>> expression, Paginacion paginacion)
         {
-            List<Cuotas> lista = new List<Cuotas>();
-            try
-            {
-                lista = _contexto.cuotas.Where(criterio).ToList();
-            }
-            catch(Exception)
-            {
-                throw;
-            }
-            finally
-            {
+            await Task.Delay(01); //Para dar tiempo a renderizar el mensaje de carga
 
-            }
+            var queryable = _contexto.cuotas.Where(expression).AsQueryable();
+            var lista = await queryable.Paginar(paginacion).ToListAsync();
             return lista;
+
+        }
+
+        public async Task<int> Contar(Expression<Func<Cuotas, bool>> expression)
+        {
+            return await _contexto.cuotas.AsQueryable().Where(expression).CountAsync();
         }
 
         public Cuotas Buscar(int id)
