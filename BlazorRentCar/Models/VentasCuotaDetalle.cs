@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 
 namespace BlazorRentCar.Models
 {
-    public class VentasVehiculoDetalle
+    public class VentasCuotaDetalle
     {
         [Key]
         public int VentasDetalleId { get; set; }
         public int VentaId { get; set; }
+        public int CuotaId { get; set; }
         public int VehiculoId { get; set; }
         public int Cantidad { get; set; }
         public double Precio { get; set; }
