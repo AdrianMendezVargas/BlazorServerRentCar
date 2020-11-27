@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 using BlazorRentCar.Models;
+using BlazorRentCar.ApplicationState;
+using BlazorRentCar.BLL;
 
 namespace BlazorRentCar.Areas.Identity.Pages.Account {
     [AllowAnonymous]

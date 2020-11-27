@@ -2,16 +2,10 @@
 
 <AuthorizeView>
     <Authorized>
-        <h1>Hello, @context.User.Identity.Name</h1>
-        @if (true) {
-            MainLayout.AsignarUsuario(context.User.Identity.Name);
-        }
+        <h1>Hello, @(context.User.Identity.Name)</h1>
     </Authorized>
     <NotAuthorized>
         <h1>Hello, Stranger</h1>
-        @if (true) {
-            MainLayout.AsignarUsuario(null);
-        }
     </NotAuthorized>
 </AuthorizeView>
 

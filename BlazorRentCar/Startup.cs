@@ -18,6 +18,7 @@ using BlazorRentCar.Data;
 using Blazored.Toast;
 using BlazorRentCar.Models;
 using BlazorRentCar.BLL;
+using BlazorRentCar.ApplicationState;
 
 namespace BlazorRentCar {
     public class Startup {
@@ -34,14 +35,21 @@ namespace BlazorRentCar {
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             services.AddDefaultIdentity<Usuarios>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole<string>>()
                 .AddEntityFrameworkStores<Contexto>();
+
             services.AddRazorPages();
             services.AddServerSideBlazor();
             services.AddScoped<AuthenticationStateProvider , RevalidatingIdentityAuthenticationStateProvider<Usuarios>>();
-            
+
+            services.AddScoped<AppState>();
+
             services.AddBlazoredToast();
             services.AddTransient<ClientesBLL>();
+            services.AddScoped<IUserClaimsPrincipalFactory<Usuarios> , MyUserClaimsPrincipalFactory>();
+            services.AddTransient<UserInfoBLL>();
         }
+
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app , IWebHostEnvironment env) {

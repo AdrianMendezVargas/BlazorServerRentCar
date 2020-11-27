@@ -36,32 +36,5 @@ namespace BlazorRentCar.Models {
             Id = user.Id;
         }
 
-        public static string Encriptar(string Contraseña)
-        {
-            if (!string.IsNullOrEmpty(Contraseña)) {
-                string resultado = string.Empty;
-                byte[] encryted = System.Text.Encoding.Unicode.GetBytes(Contraseña);
-                resultado = Convert.ToBase64String(encryted);
-
-                return resultado;
-            }
-
-            return string.Empty;
-        }
-
-        public static string DesEncriptar(string Contraseña)
-        {
-            if (!string.IsNullOrEmpty(Contraseña)) {
-                string resultado = string.Empty;
-                byte[] decryted = Convert.FromBase64String(Contraseña);
-                resultado = System.Text.Encoding.Unicode.GetString(decryted);
-                return resultado;
-            }
-
-            return string.Empty;
-        }
-
-
-
     }
 }

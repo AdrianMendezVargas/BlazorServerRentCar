@@ -1,101 +1,106 @@
 ﻿@page "/clientes"
+@inject AppState AppState
 @inject IToastService toast
+@attribute [Authorize]
 
+<AuthorizeView>
 
-<div class="container mt-3">
-    <div class="card shadow-lg">
-        <div class="card-header bg-dark">
-            <div class="form-row">
-                <div class="col-sm">
-                    <h3 class="text-light"><i class="oi oi-person mr-3" />Clientes</h3>
-                </div>
-                <div class="col-sm">
-                    <button class="btn btn-dark border-light" @onclick="AgregarCliente">
-                        <i class="oi oi-plus" />
-                        Agregar
-                    </button>
-                </div>
-                <div class="col-sm">
-                    <select @bind="indexSelect" class="custom-select">
-                        <option value="0">Filtrar por</option>
-                        <option value="1">Id</option>
-                        <option value="2">Nombre</option>
-                    </select>
-                </div>
-                <div class="col-sm">
-                    <input class="form-control w-100" type="@(indexSelect == 1 ? "number" : "text")" @bind="criterioDeBusqueda" />
-                </div>
-                <div class="col-sm text-center">
-                    <button class="btn btn-dark border-light" @onclick="FiltarClientes">
-                        <i class="oi oi-magnifying-glass" />
-                        Buscar
-                    </button>
+    <div class="container mt-3">
+        <div class="card shadow-lg">
+            <div class="card-header bg-dark">
+                <div class="form-row">
+                    <div class="col-sm">
+                        <h3 class="text-light"><i class="oi oi-person mr-3" />Clientes</h3>
+                    </div>
+                    <div class="col-sm">
+                        <button class="btn btn-dark border-light" @onclick="AgregarCliente">
+                            <i class="oi oi-plus" />
+                            Agregar
+                        </button>
+                    </div>
+                    <div class="col-sm">
+                        <select @bind="indexSelect" class="custom-select">
+                            <option value="0">Filtrar por</option>
+                            <option value="1">Id</option>
+                            <option value="2">Nombre</option>
+                        </select>
+                    </div>
+                    <div class="col-sm">
+                        <input class="form-control w-100" type="@(indexSelect == 1 ? "number" : "text")" @bind="criterioDeBusqueda" />
+                    </div>
+                    <div class="col-sm text-center">
+                        <button class="btn btn-dark border-light" @onclick="FiltarClientes">
+                            <i class="oi oi-magnifying-glass" />
+                            Buscar
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="card-body">
-            @if (Clientes == null) {
-                <div>
-                    <h4>Cargando...</h4>
-                </div>
-            } else {
-                <table class="table table-hover">
-                    <thead class="thead-light">
-                        <tr>
-                            <th>Cliente Id</th>
-                            <th>Nombre</th>
-                            <th>Apellido</th>
-                            <th>Email</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var cliente in Clientes) {
-                        <tr>
-                            <td>@cliente.ClienteId</td>
-                            <td>@cliente.Nombres</td>
-                            <td>@cliente.Apellidos</td>
-                            <td>@cliente.Email</td>
-                            <td><button @onclick="()=>ModificarCliente(cliente)" class="btn btn-outline-dark">Ver</button></td>
-                        </tr>
-                        }
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <th colspan="5">
-                                <Paginas CambioPaginacion="CambioPaginacion"
-                                         PaginasTotales="PaginasTotales"
-                                         Paginacion="PaginacionActual"
-                                         Radio="2" />
-                            </th>
-                        </tr>
-                    </tfoot>
-                </table>
-            }
+            <div class="card-body">
+                @if (Clientes == null) {
+                    <div>
+                        <h4>Cargando...</h4>
+                    </div>
+                } else {
+                    <table class="table table-hover">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Cliente Id</th>
+                                <th>Nombre</th>
+                                <th>Apellido</th>
+                                <th>Email</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var cliente in Clientes) {
+                                <tr>
+                                    <td>@cliente.ClienteId</td>
+                                    <td>@cliente.Nombres</td>
+                                    <td>@cliente.Apellidos</td>
+                                    <td>@cliente.Email</td>
+                                    <td><button @onclick="()=>ModificarCliente(cliente)" class="btn btn-outline-dark">Ver</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="5">
+                                    <Paginas CambioPaginacion="CambioPaginacion"
+                                             PaginasTotales="PaginasTotales"
+                                             Paginacion="PaginacionActual"
+                                             Radio="2" />
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+            </div>
         </div>
     </div>
-</div>
 
 
 
-@if (MostraDialogoEditor) {
-    Title = EsNuevoCliente ? "Nuevo Cliente" : "Modificar Cliente";
+    @if (MostraDialogoEditor) {
+        Title = EsNuevoCliente ? "Nuevo Cliente" : "Modificar Cliente";
 
-    <Dialogo Title="@Title" OnClose="OcultarDialogo">
-        <Body>
-            <EditForm id="form-clientes" Model="clienteEnModificacion" OnValidSubmit="Guardar">
-                <FieldsCliente Cliente="clienteEnModificacion"/>
-                <DataAnnotationsValidator />
-            </EditForm>
-        </Body>
-        <Footer>
-            <button type="button" disabled="@(!EsNuevoCliente)" class="btn btn-warning" @onclick="Nuevo">Nuevo</button>
-            <input type="submit" form="form-clientes" class="btn btn-success" value="Guardar" />
-            <button type="button" disabled="@(EsNuevoCliente)" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
-        </Footer>
-    </Dialogo>
-}
-
+        <Dialogo Title="@Title" OnClose="OcultarDialogo">
+            <Body>
+                <EditForm id="form-clientes" Model="clienteEnModificacion" OnValidSubmit="Guardar">
+                    <ChildContent Context="EditContext">
+                        <FieldsCliente Cliente="clienteEnModificacion" />
+                        <DataAnnotationsValidator />
+                    </ChildContent>
+                </EditForm>
+            </Body>
+            <Footer>
+                <button type="button" disabled="@(!EsNuevoCliente)" class="btn btn-warning" @onclick="Nuevo">Nuevo</button>
+                <input type="submit" form="form-clientes" class="btn btn-success" value="Guardar" />
+                <button type="button" disabled="@(EsNuevoCliente)" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
+            </Footer>
+        </Dialogo>
+    }
+</AuthorizeView>
 
 
 @code {
@@ -106,6 +111,7 @@
     bool EsNuevoCliente = false;
     string Title;
 
+    Paginacion PaginacionActual = new Paginacion();
     int ClientesTotalesFiltrados;
     Expression<Func<Cliente , bool>> expressionFiltrado = c => true;
     int PaginasTotales;
@@ -113,10 +119,7 @@
     int indexSelect = 0; //indice actual del select
     string criterioDeBusqueda;
 
-    Cliente clienteEnModificacion = new Cliente();
-
-    Paginacion PaginacionActual = new Paginacion();
-
+    Cliente clienteEnModificacion;
     public List<Cliente> Clientes { get; set; }
 
     protected async override Task OnInitializedAsync() {
@@ -128,7 +131,7 @@
     }
 
     async Task RefrescarTabla() {
-        Clientes = await ClientesBLL.GetClientes(expressionFiltrado, PaginacionActual);
+        Clientes = await ClientesBLL.GetClientes(expressionFiltrado , PaginacionActual);
         ClientesTotalesFiltrados = await ClientesBLL.Contar(expressionFiltrado);
         GetPaginasTotales();
     }
@@ -146,7 +149,7 @@
     }
 
     void AgregarCliente() {
-        clienteEnModificacion = new Cliente();
+        clienteEnModificacion = new Cliente(AppState.ClaimsPrincipal.Identity.Name);
         EsNuevoCliente = true;
         MostraDialogoEditor = true;
     }
@@ -164,7 +167,7 @@
     }
 
     void Nuevo() {
-        clienteEnModificacion = new Cliente();
+        clienteEnModificacion = new Cliente(AppState.ClaimsPrincipal.Identity.Name);
     }
     async Task Guardar() {
 

@@ -14,42 +14,51 @@
 
         .form-field input {
             width: 100%;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+
+        .form-field .invalid{
+            border-color: red;
         }
 </style>
 
 <div class="form-field">
-    <label class="col-form-label">Nombres: </label>
+    <label class="col-form-label-sm">Nombres: </label>
     <div>
-        <InputText class="form-control" @bind-Value="Cliente.Nombres"/><br/>
+        <InputText @bind-Value="Cliente.Nombres"/><br/>
         <ValidationMessage For="()=>Cliente.Nombres"/>
     </div>
     
 </div>
 <div class="form-field">
-    <label class="col-form-label">Apellidos: </label>
+    <label class="col-form-label-sm">Apellidos: </label>
     <div>
-        <InputText class="form-control" @bind-Value="Cliente.Apellidos"/><br/>
+        <InputText class="form-control-sm" @bind-Value="Cliente.Apellidos"/><br/>
         <ValidationMessage For="()=>Cliente.Apellidos"/>
     </div>
 </div>
 <div class="form-field">
-    <label class="col-form-label">Direcci&oacute;n: </label>
+    <label class="col-form-label-sm">Direcci&oacute;n: </label>
     <div>
-        <InputText class="form-control" @bind-Value="Cliente.Direccion" /><br />
+        <InputText class="form-control-sm" @bind-Value="Cliente.Direccion" /><br />
         <ValidationMessage For="()=>Cliente.Direccion" />
     </div>
 </div>
 <div class="form-field">
-    <label class="col-form-label">Email: </label>
+    <label class="col-form-label-sm">Email: </label>
     <div>
-        <InputText class="form-control" @bind-Value="Cliente.Email" /><br />
+        <InputText class="form-control-sm" @bind-Value="Cliente.Email" /><br />
         <ValidationMessage For="()=>Cliente.Email" />
     </div>
 </div>
 <div class="form-field">
-    <label class="col-form-label">Tel&eacute;fono: </label>
+    <label class="col-form-label-sm">Tel&eacute;fono: </label>
     <div>
-        <InputText class="form-control" @bind-Value="Cliente.Telefono" /><br />
+        <InputText class="form-control-sm" @bind-Value="Cliente.Telefono" /><br />
         <ValidationMessage For="()=>Cliente.Telefono" />
     </div>
 </div>
