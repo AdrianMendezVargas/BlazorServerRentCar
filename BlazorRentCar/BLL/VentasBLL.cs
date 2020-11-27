@@ -39,9 +39,30 @@ namespace BlazorRentCar.BLL
             return encontrado;    
         }
 
-     
+     public Ventas Buscar(int id)
+        {
+            Ventas venta;
+            try
+            {
+                venta = _contexto.Ventas
+                    .Where(v => v.VentaId == id)
+                    .Include(v => v.VentaDetalle)
+                    .FirstOrDefault();
 
+                venta = _contexto.Ventas.Find(id);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                
+            }
+            return venta;
+        }
 
+       
 
     }
 }

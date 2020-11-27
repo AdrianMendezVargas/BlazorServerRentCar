@@ -11,6 +11,7 @@ namespace BlazorRentCar.Data {
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Ventas> Ventas { get; set; }
         public DbSet<Cuotas> cuotas { get; set; }
+        public DbSet<Vehiculo> Vehiculos { get; set; }
 
         public Contexto(DbContextOptions<Contexto> options)
             : base(options) {
