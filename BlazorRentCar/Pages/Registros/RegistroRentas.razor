@@ -1,5 +1,4 @@
 ﻿@page "/registro-rentas"
-@page "/registro-rentas/{rentaId:int}"
 
 @inject AppState appState
 @inject IToastService toast
@@ -135,17 +134,17 @@
 }
 
 @code {
-    Renta renta = new Renta("anonimo");
+        Renta renta = new Renta("anonimo");
 
-    Vehiculo vehiculo;
-    Cliente cliente;
+        Vehiculo vehiculo;
+        Cliente cliente;
 
-    bool MostrarClientesDialogo;
-    bool MostrarVehiculosDialogo;
+        bool MostrarClientesDialogo;
+        bool MostrarVehiculosDialogo;
 
-    [Inject] public RentasBLL RentasBLL { get; set; }
+        [Inject] public RentasBLL RentasBLL { get; set; }
 
-    [Parameter] public int rentaId { get; set; }
+        [Parameter] public int rentaId { get; set; }
 
     protected override async Task OnParametersSetAsync() {
         if (rentaId > 0) {
@@ -161,11 +160,14 @@
         }
     }
 
-    void Nuevo() => renta = new Renta(appState.ClaimsPrincipal.Identity.Name);
+    void Nuevo() { 
+        renta = new Renta(appState.ClaimsPrincipal.Identity.Name);
+        vehiculo = null;
+        cliente = null;
+    }
 
     void CalcularMonto() {
-        renta.MontoTotal = renta.GetDiasRentados() * vehiculo?.PrecioDia ?? 0;
-        StateHasChanged();
+        renta.MontoTotal = (renta.GetDiasRentados() * vehiculo?.PrecioDia ?? 0);
     }
 
     void SeleccionarCliente(Cliente _cliente) {

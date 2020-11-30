@@ -6,23 +6,32 @@
     public EditContext editContext { get; set; }
     ValidationMessageStore messageStore;
 
-    protected override void OnParametersSet() {
+    protected override void OnInitialized() {
         messageStore = new ValidationMessageStore(editContext);
+        editContext.OnFieldChanged += EditContext_OnFieldChanged;
+    }
+
+    protected override void OnParametersSet() {
+        Validar();
+    }
+
+    void Validar() {
+        messageStore.Clear();
 
         var renta = ((Renta) editContext.Model);
         if (renta.GetDiasRentados() < 1) {
             messageStore.Add(editContext.Field("FechaFinal") , "Debe rentar por lo menos un dia.");
             editContext.NotifyValidationStateChanged();
-        } else {
-            messageStore.Clear(()=>renta.FechaFinal);
         }
         if (renta.FechaInicial.Date < DateTime.Today) {
             messageStore.Add(editContext.Field("FechaInicial") , "La fecha inicial debe ser mayor que la actual.");
             editContext.NotifyValidationStateChanged();
         }
-        if (!editContext.Validate()) {
-            return;
-        }
+    }
+
+    private void EditContext_OnFieldChanged(object sender , FieldChangedEventArgs e) {
+        Validar();
+        editContext.NotifyValidationStateChanged();
     }
 
 }

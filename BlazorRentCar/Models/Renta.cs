@@ -24,7 +24,7 @@ namespace BlazorRentCar.Models {
         public DateTime FechaInicial { get; set; } = DateTime.Now;
 
         [Required]
-        public DateTime FechaFinal { get; set; } = DateTime.Now;
+        public DateTime FechaFinal { get; set; } = DateTime.Now.AddDays(1);
 
         [Required]
         public decimal MontoTotal { get; set; }
@@ -35,7 +35,7 @@ namespace BlazorRentCar.Models {
 
         public virtual int GetDiasRentados(){
             var timeSpam = FechaFinal.Date - FechaInicial.Date;
-            return timeSpam.Days;
+            return timeSpam.Days > 0 ? timeSpam.Days : 0;
         }
 
         public Renta(string userName) {
