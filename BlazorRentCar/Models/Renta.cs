@@ -13,9 +13,11 @@ namespace BlazorRentCar.Models {
         public string UserName { get; set; }
 
         [Required]
+        [Range(minimum:1, maximum:int.MaxValue, ErrorMessage ="Seleccione un vehículo")]
         public int VehiculoId { get; set; }
 
         [Required]
+        [Range(minimum: 1 , maximum: int.MaxValue , ErrorMessage = "Seleccione un cliente")]
         public int ClienteId { get; set; }
 
         [Required]

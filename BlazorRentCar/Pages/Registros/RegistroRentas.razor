@@ -6,12 +6,11 @@
 
 <div class="container mt-3">
     <div class="card shadow-lg">
-        <div class="card-header bg-dark">
-            <h3>Registro rentas</h3>
-        </div>
-        <div class="card-body">
-            <EditForm id="form" Model="renta" OnValidSubmit="Guardar">
-
+        <EditForm id="form" Model="renta" OnValidSubmit="Guardar">
+            <div class="card-header bg-dark">
+                <h3>Registro rentas</h3>
+            </div>
+            <div class="card-body">
                 <div class="form-group row">
                     <label class="col col-form-label">Renta id:</label>
                     <div class="col-sm-10 form-inline">
@@ -41,6 +40,7 @@
                                 <input value="@cliente?.Email" readonly placeholder="Email" class="form-control m-0" />
                             </div>
                         </div>
+                        <ValidationMessage For="()=>renta.ClienteId" />
                     </div>
                 </div>
                 @*Datos del vehiculo*@
@@ -76,6 +76,7 @@
                                 <input value="@vehiculo?.Pasajeros" readonly placeholder="Pasajeros" class="form-control m-0" />
                             </div>
                         </div>
+                        <ValidationMessage For="()=>renta.VehiculoId"/>
                     </div>
                 </div>
                 @*Vigencia de renta*@
@@ -107,45 +108,42 @@
                         <h4>@renta.MontoTotal.ToString("C")</h4>
                     </div>
                 </div>
-                <DataAnnotationsValidator />
-            </EditForm>
-        </div>
-        <div class="card-footer text-center">
-            <button class="btn btn-outline-dark" @onclick="Nuevo">Nuevo</button>
-            <input type="submit" form="form" class="btn btn-outline-success" value="Guardar" />
-            <button class="btn btn-outline-danger" @onclick="Eliminar">Eliminar</button>
-        </div>
+            </div>
+            <div class="card-footer text-center">
+                <button class="btn btn-outline-dark" @onclick="Nuevo">Nuevo</button>
+                <input type="submit" form="form" class="btn btn-outline-success" value="Guardar" />
+                <button class="btn btn-outline-danger" @onclick="Eliminar">Eliminar</button>
+            </div>
+            <VigenciaValidator/>
+            <DataAnnotationsValidator />
+        </EditForm>
     </div>
 </div>
 
 @if (MostrarClientesDialogo) {
     <Dialogo Title="Seleccione al cliente" OnClose="OcultarDialogo">
         <Body>
-            <RegistroClientes ModoSeleccionCliente="true" OnClienteSelected="(Cliente c)=> SeleccionarCliente(c)"/>
+            <RegistroClientes ModoSeleccionCliente="true" OnClienteSelected="(Cliente c)=> SeleccionarCliente(c)" />
         </Body>
     </Dialogo>
 } else if (MostrarVehiculosDialogo) {
     <Dialogo Title="Seleccione el vehiculo" OnClose="OcultarDialogo">
         <Body>
-            
+
         </Body>
     </Dialogo>
 }
 
 @code {
-    Renta renta = new Renta("");
+    Renta renta = new Renta("anonimo");
 
     Vehiculo vehiculo;
-    List<Vehiculo> Vehiculos = new List<Vehiculo>();
-
     Cliente cliente;
 
     bool MostrarClientesDialogo;
     bool MostrarVehiculosDialogo;
 
     [Inject] public RentasBLL RentasBLL { get; set; }
-    [Inject] public VehiculoBLL VehiculosBLL { get; set; }
-    [Inject] public ClientesBLL ClientesBLL { get; set; }
 
     [Parameter] public int rentaId { get; set; }
 
@@ -157,17 +155,22 @@
 
     protected override void OnAfterRender(bool firstRender) {
         base.OnAfterRender(firstRender);
-        Nuevo();
+        if (firstRender) {
+            Nuevo();
+            StateHasChanged();
+        }
     }
 
     void Nuevo() => renta = new Renta(appState.ClaimsPrincipal.Identity.Name);
 
     void CalcularMonto() {
-
+        renta.MontoTotal = renta.GetDiasRentados() * vehiculo?.PrecioDia ?? 0;
+        StateHasChanged();
     }
 
     void SeleccionarCliente(Cliente _cliente) {
         cliente = _cliente;
+        renta.ClienteId = cliente?.ClienteId ?? 0;
         OcultarDialogo();
     }
 

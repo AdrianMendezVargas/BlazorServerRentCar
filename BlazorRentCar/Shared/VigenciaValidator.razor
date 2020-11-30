@@ -1,0 +1,28 @@
+﻿
+
+@code {
+
+    [CascadingParameter]
+    public EditContext editContext { get; set; }
+    ValidationMessageStore messageStore;
+
+    protected override void OnParametersSet() {
+        messageStore = new ValidationMessageStore(editContext);
+
+        var renta = ((Renta) editContext.Model);
+        if (renta.GetDiasRentados() < 1) {
+            messageStore.Add(editContext.Field("FechaFinal") , "Debe rentar por lo menos un dia.");
+            editContext.NotifyValidationStateChanged();
+        } else {
+            messageStore.Clear(()=>renta.FechaFinal);
+        }
+        if (renta.FechaInicial.Date < DateTime.Today) {
+            messageStore.Add(editContext.Field("FechaInicial") , "La fecha inicial debe ser mayor que la actual.");
+            editContext.NotifyValidationStateChanged();
+        }
+        if (!editContext.Validate()) {
+            return;
+        }
+    }
+
+}

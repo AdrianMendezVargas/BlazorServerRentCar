@@ -30,10 +30,9 @@
     <div class="form-field">
         <label class="col-form-label-sm">Nombres: </label>
         <div>
-            <InputText @bind-Value="Cliente.Nombres" /><br />
+            <InputText class="form-control-sm" @bind-Value="Cliente.Nombres" /><br />
             <ValidationMessage For="()=>Cliente.Nombres" />
         </div>
-
     </div>
     <div class="form-field">
         <label class="col-form-label-sm">Apellidos: </label>

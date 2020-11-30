@@ -4,14 +4,16 @@ using BlazorRentCar.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlazorRentCar.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201130184621_AddTableVigenciaToRentas")]
+    partial class AddTableVigenciaToRentas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,12 +72,6 @@ namespace BlazorRentCar.Migrations
                     b.Property<bool>("Eliminada")
                         .HasColumnType("bit");
 
-                    b.Property<DateTime>("FechaFinal")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("FechaInicial")
-                        .HasColumnType("datetime2");
-
                     b.Property<decimal>("MontoTotal")
                         .HasColumnType("decimal(18,2)");
 
@@ -86,7 +82,12 @@ namespace BlazorRentCar.Migrations
                     b.Property<int>("VehiculoId")
                         .HasColumnType("int");
 
+                    b.Property<int>("VigenciaId")
+                        .HasColumnType("int");
+
                     b.HasKey("RentaId");
+
+                    b.HasIndex("VigenciaId");
 
                     b.ToTable("Rentas");
                 });
@@ -310,6 +311,24 @@ namespace BlazorRentCar.Migrations
                     b.ToTable("VentasCuotaDetalle");
                 });
 
+            modelBuilder.Entity("BlazorRentCar.Models.Vigencia", b =>
+                {
+                    b.Property<int>("VigenciaId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("FechaFinal")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("FechaInicial")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("VigenciaId");
+
+                    b.ToTable("Vigencia");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<string>", b =>
                 {
                     b.Property<string>("Id")
@@ -443,6 +462,15 @@ namespace BlazorRentCar.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("BlazorRentCar.Models.Renta", b =>
+                {
+                    b.HasOne("BlazorRentCar.Models.Vigencia", "Vigencia")
+                        .WithMany()
+                        .HasForeignKey("VigenciaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("BlazorRentCar.Models.VentasCuotaDetalle", b =>

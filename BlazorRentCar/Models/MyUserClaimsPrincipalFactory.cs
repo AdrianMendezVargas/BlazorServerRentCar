@@ -17,7 +17,11 @@ namespace BlazorRentCar.Models {
 
         protected override async Task<ClaimsIdentity> GenerateClaimsAsync(Usuarios user) {
             var identity = await base.GenerateClaimsAsync(user);
+
             identity.AddClaim(new Claim("Email" , user.Email ?? ""));
+            identity.AddClaim(new Claim("Nombre" , user.Nombre ?? ""));
+            identity.AddClaim(new Claim("Apellido" , user.Apellido ?? ""));
+
             return identity;
         }
     }

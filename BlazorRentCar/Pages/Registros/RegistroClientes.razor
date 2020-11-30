@@ -38,13 +38,13 @@
                     </div>
                 </div>
             </div>
-            <div class="card-body">
+            <div class="card-body table-responsive">
                 @if (Clientes == null) {
                     <div>
                         <h4>Cargando...</h4>
                     </div>
                 } else {
-                    <table class="table table-hover">
+                    <table class="table table-hover text-nowrap">
                         <thead class="thead-light">
                             <tr>
                                 <th>Cliente Id</th>
@@ -230,7 +230,4 @@
         await RefrescarTabla();
         StateHasChanged();
     }
-
-
-
 }
