@@ -19,22 +19,22 @@ namespace BlazorRentCar.BLL
             _contexto = contexto;
         }
 
-        public bool Guardar(Vehiculo vehiculo)
+        public async Task<bool> Guardar(Vehiculo vehiculo)
         {
 
-            if (!Existe(vehiculo.VehiculoId))
-                return Insertar(vehiculo);
+            if (! await Existe(vehiculo.VehiculoId))
+                return await Insertar(vehiculo);
             else
-                return Modificar(vehiculo);
+                return await Modificar(vehiculo);
         }
 
-        public bool Insertar(Vehiculo vehiculo)
+        public async Task<bool> Insertar(Vehiculo vehiculo)
         {
             bool paso = false;
             try
             {
                 _contexto.Vehiculos.Add(vehiculo);
-                paso = _contexto.SaveChanges() > 0;
+                paso = await _contexto.SaveChangesAsync() > 0;
             }
             catch (Exception)
             {
@@ -48,13 +48,13 @@ namespace BlazorRentCar.BLL
             return paso;
         }
 
-        public bool Modificar(Vehiculo vehiculo)
+        public async Task<bool> Modificar(Vehiculo vehiculo)
         {
             bool paso = false;
             try
             {
                 _contexto.Entry(vehiculo).State = EntityState.Modified;
-                paso = _contexto.SaveChanges() > 0;
+                paso = await _contexto.SaveChangesAsync() > 0;
             }
             catch (Exception)
             {
@@ -68,12 +68,12 @@ namespace BlazorRentCar.BLL
             return paso;
         }
 
-        public bool Existe(int id)
+        public async Task<bool> Existe(int id)
         {
             bool encontrado = false;
             try
             {
-                encontrado = _contexto.Vehiculos.Any(m => m.VehiculoId == id);
+                encontrado = await _contexto.Vehiculos.AnyAsync(m => m.VehiculoId == id);
             }
 
             catch (Exception)
@@ -89,7 +89,7 @@ namespace BlazorRentCar.BLL
             return encontrado;
         }
 
-        public bool Eliminar(int id)
+        public async Task<bool> Eliminar(int id)
         {
             bool paso = false;
             try
@@ -98,7 +98,7 @@ namespace BlazorRentCar.BLL
                 if (vehiculo != null)
                 {
                     _contexto.Vehiculos.Remove(vehiculo);
-                    paso = _contexto.SaveChanges() > 0;
+                    paso = await _contexto.SaveChangesAsync() > 0;
                 }
             }
             catch (Exception)
@@ -113,9 +113,9 @@ namespace BlazorRentCar.BLL
 
         }
 
-        public async Task<List<Vehiculo>> GetVehiculo(Expression<Func<Vehiculo, bool>> expression, Paginacion paginacion)
+        public async Task<List<Vehiculo>> GetVehiculos(Expression<Func<Vehiculo, bool>> expression, Paginacion paginacion)
         {
-            await Task.Delay(01); //Para dar tiempo a renderizar el mensaje de carga
+            await Task.Delay(01); 
 
             var queryable = _contexto.Vehiculos.Where(expression).AsQueryable();
             var lista = await queryable.Paginar(paginacion).ToListAsync();
@@ -128,12 +128,12 @@ namespace BlazorRentCar.BLL
             return await _contexto.Vehiculos.AsQueryable().Where(expression).CountAsync();
         }
 
-        public Vehiculo Buscar(int id)
+        public async Task<Vehiculo> Buscar(int id)
         {
             Vehiculo vehiculo;
             try
             {
-                vehiculo = _contexto.Vehiculos.Find(id);
+                vehiculo = await _contexto.Vehiculos.FindAsync(id);
             }
             catch (Exception)
             {

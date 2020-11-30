@@ -1,0 +1,228 @@
+﻿@page "/registro-rentas"
+@page "/registro-rentas/{rentaId:int}"
+
+@inject AppState appState
+@inject IToastService toast
+
+<div class="container mt-3">
+    <div class="card shadow-lg">
+        <div class="card-header bg-dark">
+            <h3>Registro rentas</h3>
+        </div>
+        <div class="card-body">
+            <EditForm id="form" Model="renta" OnValidSubmit="Guardar">
+
+                <div class="form-group row">
+                    <label class="col col-form-label">Renta id:</label>
+                    <div class="col-sm-10 form-inline">
+                        <InputNumber @bind-Value="renta.RentaId" class="form-control" />
+                        <button type="button" class="btn btn-outline-primary ml-3" @onclick="Buscar">Buscar<i class="oi oi-magnifying-glass ml-2"></i></button>
+                    </div>
+                </div>
+                @*Datos del cliente*@
+                <div class="elevation-1">
+                    <div class="card-header bg-gray">
+                        <div class="form-group-sm row">
+                            <label class="col-form-label ml-2 mr-2">Cliente</label>
+                            <div class="col-sm p-0">
+                                <button type="button" class="btn btn-dark border-light" @onclick="AbrirDialogoClientes"><i class="oi oi-list-rich mr-2"></i>Seleccionar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body mb-3">
+                        <div class="form-group row mb-0">
+                            <div class="col-sm mt-1">
+                                <input value="@cliente?.Nombres" readonly placeholder="Nombres" class="form-control m-0" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@cliente?.Apellidos" readonly placeholder="Apellidos" class="form-control" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@cliente?.Email" readonly placeholder="Email" class="form-control m-0" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*Datos del vehiculo*@
+                <div class="elevation-1">
+                    <div class="card-header bg-gray">
+                        <div class="form-group-sm row">
+                            <label class="col-form-label ml-2 mr-2">Veh&iacute;culo </label>
+                            <div class="col-sm p-0">
+                                <button type="button" class="btn btn-dark border-light" @onclick="AbrirDialogoVehiculos"><i class="oi oi-list-rich mr-2"></i>Seleccionar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body mb-3">
+                        <div class="form-group row mb-0">
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.Marca" readonly placeholder="Marca" class="form-control m-0" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.Modelo" readonly placeholder="Modelo" class="form-control" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.AñoFabricacion" readonly placeholder="Año" class="form-control m-0" />
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.PrecioDia" readonly placeholder="Precio por dia" class="form-control m-0" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.Tipo" readonly placeholder="Tipo" class="form-control" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.Pasajeros" readonly placeholder="Pasajeros" class="form-control m-0" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*Vigencia de renta*@
+                <div class="elevation-1">
+                    <div class="card-header bg-gray">
+                        <div class="form-group-sm row">
+                            <label class="col-form-label ml-2">Vigencia:</label>
+                        </div>
+                    </div>
+                    <div class="card-body mb-3">
+                        <div class="form-group row mb-0">
+                            <div class="col-sm mt-1">
+                                <label>Desde:</label>
+                                <InputDate class="form-control" placeholder="Desde" @bind-Value="renta.FechaInicial" @onchange="CalcularMonto" />
+                                <ValidationMessage For="()=>renta.FechaInicial" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <label>Hasta:</label>
+                                <InputDate class="form-control" placeholder="Hasta" @bind-Value="renta.FechaFinal" @onchange="CalcularMonto" />
+                                <ValidationMessage For="()=>renta.FechaFinal" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @*Monto de renta*@
+                <div class="form-group row mb-0">
+                    <label class="col-auto col-form-label">Monto:</label>
+                    <div class="col">
+                        <h4>@renta.MontoTotal.ToString("C")</h4>
+                    </div>
+                </div>
+                <DataAnnotationsValidator />
+            </EditForm>
+        </div>
+        <div class="card-footer text-center">
+            <button class="btn btn-outline-dark" @onclick="Nuevo">Nuevo</button>
+            <input type="submit" form="form" class="btn btn-outline-success" value="Guardar" />
+            <button class="btn btn-outline-danger" @onclick="Eliminar">Eliminar</button>
+        </div>
+    </div>
+</div>
+
+@if (MostrarClientesDialogo) {
+    <Dialogo Title="Seleccione al cliente" OnClose="OcultarDialogo">
+        <Body>
+            <RegistroClientes ModoSeleccionCliente="true" OnClienteSelected="(Cliente c)=> SeleccionarCliente(c)"/>
+        </Body>
+    </Dialogo>
+} else if (MostrarVehiculosDialogo) {
+    <Dialogo Title="Seleccione el vehiculo" OnClose="OcultarDialogo">
+        <Body>
+            
+        </Body>
+    </Dialogo>
+}
+
+@code {
+    Renta renta = new Renta("");
+
+    Vehiculo vehiculo;
+    List<Vehiculo> Vehiculos = new List<Vehiculo>();
+
+    Cliente cliente;
+
+    bool MostrarClientesDialogo;
+    bool MostrarVehiculosDialogo;
+
+    [Inject] public RentasBLL RentasBLL { get; set; }
+    [Inject] public VehiculoBLL VehiculosBLL { get; set; }
+    [Inject] public ClientesBLL ClientesBLL { get; set; }
+
+    [Parameter] public int rentaId { get; set; }
+
+    protected override async Task OnParametersSetAsync() {
+        if (rentaId > 0) {
+            renta = await RentasBLL.Buscar(rentaId);
+        }
+    }
+
+    protected override void OnAfterRender(bool firstRender) {
+        base.OnAfterRender(firstRender);
+        Nuevo();
+    }
+
+    void Nuevo() => renta = new Renta(appState.ClaimsPrincipal.Identity.Name);
+
+    void CalcularMonto() {
+
+    }
+
+    void SeleccionarCliente(Cliente _cliente) {
+        cliente = _cliente;
+        OcultarDialogo();
+    }
+
+    void AbrirDialogoClientes() {
+        MostrarClientesDialogo = true;
+    }
+
+    void AbrirDialogoVehiculos() {
+        MostrarVehiculosDialogo = true;
+    }
+
+    void OcultarDialogo() {
+        MostrarClientesDialogo = false;
+        MostrarVehiculosDialogo = false;
+    }
+
+    async Task Guardar() {
+
+        bool guardo = await RentasBLL.Guardar(renta);
+
+        if (guardo) {
+            toast.ShowSuccess("Guardado");
+            Nuevo();
+        } else
+            toast.ShowError("Error al guardar");
+    }
+
+    async Task Eliminar() {
+
+        if (await RentasBLL.Existe(renta.RentaId)) {
+
+            bool eliminado = await RentasBLL.Eliminar(renta.RentaId);
+
+            if (eliminado) {
+                toast.ShowSuccess("Eliminado");
+                Nuevo();
+            } else
+                toast.ShowError("Error al eliminar");
+
+        } else {
+            toast.ShowWarning("Este renta no existe");
+        }
+
+    }
+
+    async Task Buscar() {
+
+        var rentaBuscado = await RentasBLL.Buscar(renta.RentaId);
+
+        if (rentaBuscado != null) {
+            renta = rentaBuscado;
+        } else {
+            toast.ShowWarning("No encontrado");
+            Nuevo();
+        }
+    }
+
+}

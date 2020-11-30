@@ -13,7 +13,7 @@ using BlazorRentCar.Models.Interfaces;
 using BlazorRentCar.ApplicationState;
 
 namespace BlazorRentCar.BLL {
-    public class ClientesBLL : IBusinessLogic<Cliente> {
+    public class ClientesBLL {
 
         private readonly Contexto _contexto;
         private readonly AppState _appState;

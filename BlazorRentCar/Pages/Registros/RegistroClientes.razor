@@ -6,18 +6,20 @@
 <AuthorizeView>
 
     <div class="container mt-3">
-        <div class="card shadow-lg">
+        <div class="card shadow-lg w-100">
             <div class="card-header bg-dark">
                 <div class="form-row">
-                    <div class="col-sm">
-                        <h3 class="text-light"><i class="oi oi-person mr-3" />Clientes</h3>
-                    </div>
-                    <div class="col-sm">
-                        <button class="btn btn-dark border-light" @onclick="AgregarCliente">
-                            <i class="oi oi-plus" />
-                            Agregar
-                        </button>
-                    </div>
+                    @if (!ModoSeleccionCliente) {
+                        <div class="col-sm">
+                            <h3 class="text-light"><i class="oi oi-person mr-3" />Clientes</h3>
+                        </div>
+                        <div class="col-sm">
+                            <button class="btn btn-dark border-light" @onclick="AgregarCliente">
+                                <i class="oi oi-plus" />
+                                Agregar
+                            </button>
+                        </div>
+                    }
                     <div class="col-sm">
                         <select @bind="indexSelect" class="custom-select">
                             <option value="0">Filtrar por</option>
@@ -59,7 +61,11 @@
                                     <td>@cliente.Nombres</td>
                                     <td>@cliente.Apellidos</td>
                                     <td>@cliente.Email</td>
-                                    <td><button @onclick="()=>ModificarCliente(cliente)" class="btn btn-outline-dark">Ver</button></td>
+                                    @if (!ModoSeleccionCliente) {
+                                        <td><button @onclick="()=>ModificarCliente(cliente)" class="btn btn-outline-dark">Ver</button></td>
+                                    } else {
+                                        <td><button @onclick="()=> RetornarCliente(cliente)" class="btn btn-outline-dark">Seleccionar</button></td>
+                                    }
                                 </tr>
                             }
                         </tbody>
@@ -67,6 +73,7 @@
                             <tr>
                                 <th colspan="5">
                                     <Paginas CambioPaginacion="CambioPaginacion"
+                                             MostrarCantidadesPorPagina="!ModoSeleccionCliente"
                                              PaginasTotales="PaginasTotales"
                                              Paginacion="PaginacionActual"
                                              Radio="2" />
@@ -107,6 +114,9 @@
     [Inject]
     public ClientesBLL ClientesBLL { get; set; }
 
+    [Parameter] public bool ModoSeleccionCliente { get; set; }
+    [Parameter] public EventCallback<Cliente> OnClienteSelected { get; set; }
+
     bool MostraDialogoEditor = false;
     bool EsNuevoCliente = false;
     string Title;
@@ -124,6 +134,10 @@
 
     protected async override Task OnInitializedAsync() {
         await RefrescarTabla();
+    }
+
+    void RetornarCliente(Cliente c) {
+        OnClienteSelected.InvokeAsync(c);
     }
 
     async Task CambioPaginacion() {

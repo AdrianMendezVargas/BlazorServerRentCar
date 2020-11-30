@@ -5,7 +5,7 @@
         <form method="post" action="Identity/Account/Logout">
             <button type="submit" class="btn btn-outline-danger m-3">Cerrar sesión<i class="oi oi-account-logout ml-2"></i></button>
         </form>
-        @if (true) {
+        @{
             AppState.ClaimsPrincipal = context.User;
             MainLayout.NombreUsuario = AppState.ClaimsPrincipal.Identity.Name;
         }
@@ -13,7 +13,7 @@
     <NotAuthorized>
         <a class="btn btn-info" href="Identity/Account/Register">Registrarse</a>
         <a class="btn btn-outline-info m-3" href="Identity/Account/Login">Log in<i class="oi oi-account-login ml-2"></i></a>
-        @if (true) {
+        @{
             AppState.ClaimsPrincipal = null;
             MainLayout.NombreUsuario = null;
         }

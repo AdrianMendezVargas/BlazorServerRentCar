@@ -10,6 +10,9 @@ namespace BlazorRentCar.Models {
         public int RentaId { get; set; }
 
         [Required]
+        public string UserName { get; set; }
+
+        [Required]
         public int VehiculoId { get; set; }
 
         [Required]
@@ -33,6 +36,9 @@ namespace BlazorRentCar.Models {
             return timeSpam.Days;
         }
 
+        public Renta(string userName) {
+            UserName = userName;
+        }
 
     }
 }

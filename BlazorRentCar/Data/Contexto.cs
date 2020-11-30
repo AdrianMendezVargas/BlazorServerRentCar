@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore;
 namespace BlazorRentCar.Data {
     public class Contexto : IdentityDbContext<Usuarios, IdentityRole<string>, string> {
         public DbSet<Cliente> Clientes { get; set; }
+        public DbSet<Renta> Rentas { get; set; }
         public DbSet<Ventas> Ventas { get; set; }
-        public DbSet<Cuotas> cuotas { get; set; }
         public DbSet<Vehiculo> Vehiculos { get; set; }
 
         public Contexto(DbContextOptions<Contexto> options)

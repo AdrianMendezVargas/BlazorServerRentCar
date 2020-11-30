@@ -7,8 +7,10 @@
                 <span class="btn @(pagina.Activa ? "btn-dark" : "btn-default")">@pagina.Texto</span>
             </li>
         }
-        <li class="ml-3 mr-1 btn" style="cursor: unset;">Cantidad por pagina:</li>
-        @foreach(var OpcionCantidad in OpcionesCantidad) {
+        @if (MostrarCantidadesPorPagina) {
+            <li class="ml-3 mr-1 btn" style="cursor: unset;">Cantidad por pagina:</li>
+        }
+        @foreach (var OpcionCantidad in OpcionesCantidad) {
             <li class="page-item" @onclick="()=> CambiarRegistroPorPagina(OpcionCantidad)">
                 <span class="btn @(OpcionCantidad.Cantidad == Paginacion.CantidadPorPagina ? "btn-dark" : "btn-default")">@OpcionCantidad.Cantidad</span>
             </li>
@@ -22,12 +24,15 @@
     [Parameter] public int Radio { get; set; } = 3;
     [Parameter] public int CantidadOpcionesRegistroPorPagina { get; set; } = 3;
     [Parameter] public EventCallback CambioPaginacion { get; set; }
+    [Parameter] public bool MostrarCantidadesPorPagina { get; set; } = true;
     List<PaginasModel> paginas = new List<PaginasModel>();
     List<OpcionCantidad> OpcionesCantidad = new List<OpcionCantidad>();
 
     protected override void OnParametersSet() {
         CargarPaginas();
-        CargarOpcionesCantidad();
+        if (MostrarCantidadesPorPagina) {
+            CargarOpcionesCantidad();
+        }
     }
 
     private void PaginaSeleccionadaInterno(PaginasModel pagina) {
