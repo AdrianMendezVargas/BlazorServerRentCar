@@ -1,5 +1,7 @@
 ﻿@page "/registro-rentas"
 
+@attribute [Authorize]
+
 @inject AppState appState
 @inject IToastService toast
 
@@ -7,7 +9,7 @@
     <div class="card shadow-lg">
         <EditForm id="form" Model="renta" OnValidSubmit="Guardar">
             <div class="card-header bg-dark">
-                <h3>Registro rentas</h3>
+                <h3><i class="fa fa-money-check mr-2"></i>Registro rentas</h3>
             </div>
             <div class="card-body">
                 <div class="form-group row">
@@ -104,7 +106,7 @@
                 <div class="form-group row mb-0">
                     <label class="col-auto col-form-label">Monto:</label>
                     <div class="col">
-                        <h4>@renta.MontoTotal.ToString("C")</h4>
+                        <h4>@renta.Monto.ToString("C")</h4>
                     </div>
                 </div>
             </div>
@@ -134,17 +136,17 @@
 }
 
 @code {
-        Renta renta = new Renta("anonimo");
+    Renta renta = new Renta("anonimo");
 
-        Vehiculo vehiculo;
-        Cliente cliente;
+    Vehiculo vehiculo;
+    Cliente cliente;
 
-        bool MostrarClientesDialogo;
-        bool MostrarVehiculosDialogo;
+    bool MostrarClientesDialogo;
+    bool MostrarVehiculosDialogo;
 
-        [Inject] public RentasBLL RentasBLL { get; set; }
+    [Inject] public RentasBLL RentasBLL { get; set; }
 
-        [Parameter] public int rentaId { get; set; }
+    [Parameter] public int rentaId { get; set; }
 
     protected override async Task OnParametersSetAsync() {
         if (rentaId > 0) {
@@ -160,14 +162,14 @@
         }
     }
 
-    void Nuevo() { 
+    void Nuevo() {
         renta = new Renta(appState.ClaimsPrincipal.Identity.Name);
         vehiculo = null;
         cliente = null;
     }
 
     void CalcularMonto() {
-        renta.MontoTotal = (renta.GetDiasRentados() * vehiculo?.PrecioDia ?? 0);
+        renta.Monto = (renta.GetDiasRentados() * vehiculo?.PrecioDia ?? 0);
     }
 
     void SeleccionarCliente(Cliente _cliente) {
