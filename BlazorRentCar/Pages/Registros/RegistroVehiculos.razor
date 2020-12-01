@@ -10,20 +10,15 @@
             <div class="form-row">
                 @if (!ModoSeleccionVehiculo) {
                     <div class="col-sm">
-                        <h3 class="text-light"><i class="oi oi-person mr-3" />Vehiculos</h3>
+                        <h3 class="text-light"><i class="fa fa-car mr-3" />Vehiculos</h3>
                     </div>
                     <div class="col-sm">
                         <button class="btn btn-dark border-light" @onclick="AgregarVehiculo">
                             <i class="oi oi-plus" />
                             Agregar
-
                         </button>
-
-
                     </div>
-
                 }
-
                 <div class="col-sm">
                     <select @bind="indexSelect" class="custom-select">
                         <option value="0">Filtrar por</option>
@@ -34,25 +29,20 @@
                 </div>
                 <div class="col-sm">
                     <input class="form-control w-100" type="@(indexSelect == 1 ? "number" : "text")" @bind="criterioDeBusqueda" />
-
                 </div>
                 <div class="col-sm text-center">
                     <button class="btn btn-dark border-light" @onclick="FiltarVehiculo">
                         <i class="oi oi-magnifying-glass" />
                         Buscar
                     </button>
-
                 </div>
-
             </div>
-
         </div>
         <div class="card-body table-responsive">
             @if (Vehiculos == null) {
                 <div>
                     <h4>Cargando...</h4>
                 </div>
-
             } else {
                 <table class="table table-hover text-nowrap">
                     <thead class="thead-light">
@@ -61,35 +51,32 @@
                             <th>Placa </th>
                             <th>Marca</th>
                             <th>Modelo</th>
-                            <th>AñoFabricacion</th>
                             <th>PrecioDia</th>
-                            <th>Kilometraje</th>
-                            <th>Chassis</th>
-                            <th>Pasajeros</th>
-                            <th>Puertas</th>
-                            <th>Traccion</th>
-                            <th>Comentario</th>
-                            <th>Valor</th>
-                            <th>Tipo</th>
+                            @if (!ModoSeleccionVehiculo) {
+                                <th>Año</th>
+                                <th>Kilometraje</th>
+                                <th>Pasajeros</th>
+                                <th>Estado</th>
+                            }
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var vehiculo in Vehiculos) {
+                        @foreach (var vehiculo in Vehiculos = ModoSeleccionVehiculo
+                            ? Vehiculos.Where(v => v.Estado == Models.Enums.VehiculoEstado.Disponible).ToList() 
+                            : Vehiculos) {
                             <tr>
                                 <td>@vehiculo.VehiculoId</td>
                                 <td>@vehiculo.Placa</td>
                                 <td>@vehiculo.Marca</td>
                                 <td>@vehiculo.Modelo</td>
-                                <td>@vehiculo.AñoFabricacion</td>
-                                <td>@vehiculo.PrecioDia</td>
-                                <td>@vehiculo.Kilometraje</td>
-                                <td>@vehiculo.Chassis</td>
-                                <td>@vehiculo.Pasajeros</td>
-                                <td>@vehiculo.Puertas</td>
-                                <td>@vehiculo.Traccion</td>
-                                <td>@vehiculo.Comentario</td>
-                                <td>@vehiculo.Valor</td>
-                                <td>@vehiculo.Tipo</td>
+                                <td>@vehiculo.PrecioDia.ToString("C")</td>
+                                @if (!ModoSeleccionVehiculo) {
+                                    <td>@vehiculo.AñoFabricacion.Year</td>
+                                    <td>@vehiculo.Kilometraje</td>
+                                    <td>@vehiculo.Pasajeros</td>
+                                    <td>@vehiculo.Estado</td>
+                                }
                                 @if (!ModoSeleccionVehiculo) {
                                     <td><button @onclick="()=>ModificarVehiculo(vehiculo)" class="btn btn-outline-dark">Ver</button></td>
                                 } else {
@@ -100,7 +87,7 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <th colspan="5">
+                            <th colspan="6">
                                 <Paginas CambioPaginacion="CambioPaginacion"
                                          MostrarCantidadesPorPagina="!ModoSeleccionVehiculo"
                                          PaginasTotales="PaginasTotales"
@@ -111,11 +98,8 @@
                     </tfoot>
                 </table>
             }
-
         </div>
-
     </div>
-
 </div>
 
 @if (MostraDialogoEditor) {
@@ -133,7 +117,6 @@
             <button type="button" disabled="@(EsNuevoVehiculo)" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
         </Footer>
     </Dialogo>
-
 }
 
 @code {
@@ -147,12 +130,10 @@
     bool EsNuevoVehiculo = false;
     string Title;
 
-
     Paginacion PaginacionActual = new Paginacion();
     int VehiculoTotalesFiltrados;
     Expression<Func<Vehiculo , bool>> expressionFiltrado = c => true;
     int PaginasTotales;
-
 
     int indexSelect = 0; //indice actual del select
     string criterioDeBusqueda;
@@ -164,11 +145,9 @@
         await RefrescarTabla();
     }
 
-
     void RetornarVehiculo(Vehiculo v) {
         OnVehiculoSelected.InvokeAsync(v);
     }
-
 
     async Task CambioPaginacion() {
         await RefrescarTabla();
@@ -196,8 +175,6 @@
         EsNuevoVehiculo = false;
         MostraDialogoEditor = true;
     }
-
-
 
     void AgregarVehiculo() {
         vehiculoEnModificacion = new Vehiculo(AppState.ClaimsPrincipal.Identity.Name);
