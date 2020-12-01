@@ -46,7 +46,7 @@ namespace BlazorRentCar.Models {
         [Required(ErrorMessage = "Es obligatorio introducir el tipo")]
         public string Tipo { get; set; }
 
-        public Vehiculo()
+        public Vehiculo(string userName)
         {
             VehiculoId = 0;
             ImportadorId = 0;

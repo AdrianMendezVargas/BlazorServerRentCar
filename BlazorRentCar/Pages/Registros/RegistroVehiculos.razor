@@ -1,0 +1,318 @@
+﻿@page "/Vehiculo"
+@inject AppState AppState
+@inject IToastService toast
+@attribute [Authorize]
+
+<AuthorizeView>
+
+    <div class="container mt-3">
+        <div class="card shadow-lg w-100">
+            <div class="card-header bg-dark">
+                <div class="form-row">
+                    @if (!ModoSeleccionVehiculo)
+                    {
+                        <div class="col-sm">
+                            <h3 class="text-light"><i class="oi oi-person mr-3" />Vehiculos</h3>
+                        </div>
+                        <div class="col-sm">
+                            <button class="btn btn-dark border-light" @onclick="AgregarVehiculo">
+                                <i class="oi oi-plus" />
+                                Agregar
+
+                            </button>
+
+
+                        </div>
+
+                    }
+
+                    <div class="col-sm">
+                        <select @bind="indexSelect" class="custom-select">
+                            <option value="0">Filtrar por</option>
+                            <option value="1">Id</option>
+                            <option value="2"> Modelo</option>
+                        </select>
+
+                    </div>
+                    <div class="col-sm">
+                        <input class="form-control w-100" type="@(indexSelect == 1 ? "number" : "text")" @bind="criterioDeBusqueda" />
+
+                    </div>
+                    <div class="col-sm text-center">
+                        <button class="btn btn-dark border-light" @onclick="FiltarVehiculo">
+                            <i class="oi oi-magnifying-glass" />
+                            Buscar
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="card-body table-responsive">
+                @if (Vehiculos == null)
+                {
+                    <div>
+                        <h4>Cargando...</h4>
+                    </div>
+
+                }
+                else
+                {
+                    <table class="table table-hover text-nowrap">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Vehiculo Id</th>
+                                <th>Importador Id</th>
+                                <th>Matricula</th>
+                                <th>Placa </th>
+                                <th>Marca</th>
+                                <th>Modelo</th>
+                                <th>AñoFabricacion</th>
+                                <th>PrecioDia</th>
+                                <th>Kilometraje</th>
+                                <th>Ano</th>
+                                <th>Chassis</th>
+                                <th>Pasajeros</th>
+                                <th>Puertas</th>
+                                <th>Traccion</th>
+                                <th>Comentario</th>
+                                <th>Valor</th>
+                                <th>Tipo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var vehiculo in Vehiculos)
+                            {
+                                <tr>
+                                    <td>@vehiculo.VehiculoId</td>
+                                    <td>@vehiculo.ImportadorId</td>
+                                    <td>@vehiculo.Matricula</td>
+                                    <td>@vehiculo.Placa</td>
+                                    <td>@vehiculo.Marca</td>
+                                    <td>@vehiculo.Modelo</td>
+                                    <td>@vehiculo.AñoFabricacion</td>
+                                    <td>@vehiculo.PrecioDia</td>
+                                    <td>@vehiculo.Kilometraje</td>
+                                    <td>@vehiculo.Ano</td>
+                                    <td>@vehiculo.Chassis</td>
+                                    <td>@vehiculo.Pasajeros</td>
+                                    <td>@vehiculo.Puertas</td>
+                                    <td>@vehiculo.Traccion</td>
+                                    <td>@vehiculo.Comentario</td>
+                                    <td>@vehiculo.Valor</td>
+                                    <td>@vehiculo.Tipo</td>
+                                    @if (!ModoSeleccionVehiculo)
+                                    {
+                                        <td><button @onclick="()=>ModificarVehiculo(vehiculo)" class="btn btn-outline-dark">Ver</button></td>
+                                    }
+                                    else
+                                    {
+                                        <td><button @onclick="()=> RetornarVehiculo(vehiculo)" class="btn btn-outline-dark">Seleccionar</button></td>
+                                    }
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <th colspan="5">
+                                    <Paginas CambioPaginacion="CambioPaginacion"
+                                             MostrarCantidadesPorPagina="!ModoSeleccionVehiculo"
+                                             PaginasTotales="PaginasTotales"
+                                             Paginacion="PaginacionActual"
+                                             Radio="2" />
+                                </th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+
+    @if (MostraDialogoEditor)
+    {
+        Title = EsNuevoVehiculo ? "Nuevo Vehiculo" : "Modificar Vehiculo";
+        <Dialogo Title="@Title" OnClose="OcultarDialogo">
+            <Body>
+                <EditForm id="form-clientes" Model="vehiculoEnModificacion" OnValidSubmit="Guardar">
+                    <ChildContent Context="EditContext">
+                        <FieldsVehiculo Vehiculo="vehiculoEnModificacion" />
+                        <DataAnnotationsValidator />
+                    </ChildContent>
+                </EditForm>
+            </Body>
+            <Footer>
+                <button type="button" disabled="@(!EsNuevoVehiculo)" class="btn btn-warning" @onclick="Nuevo">Nuevo</button>
+                <input type="submit" form="form-vehiculo" class="btn btn-success" value="Guardar" />
+                <button type="button" disabled="@(EsNuevoVehiculo)" class="btn btn-danger" @onclick="Eliminar">Eliminar</button>
+            </Footer>
+        </Dialogo>
+
+    }
+
+</AuthorizeView>
+    @code {
+        [Inject]
+        public VehiculoBLL VehiculoBLL { get; set; }
+
+        [Parameter] public bool ModoSeleccionVehiculo { get; set; }
+        [Parameter] public EventCallback<Vehiculo> OnVehiculoSelected { get; set; }
+
+        bool MostraDialogoEditor = false;
+        bool EsNuevoVehiculo = false;
+        string Title;
+
+
+        Paginacion PaginacionActual = new Paginacion();
+        int VehiculoTotalesFiltrados;
+        Expression<Func<Vehiculo, bool>> expressionFiltrado = c => true;
+        int PaginasTotales;
+
+
+        int indexSelect = 0; //indice actual del select
+        string criterioDeBusqueda;
+
+        Vehiculo vehiculoEnModificacion;
+        public List<Vehiculo> Vehiculos { get; set; }
+
+        protected async override Task OnInitializedAsync()
+        {
+            await RefrescarTabla();
+        }
+
+
+        void RetornarVehiculo(Vehiculo v)
+        {
+            OnVehiculoSelected.InvokeAsync(v);
+        }
+
+
+        async Task CambioPaginacion()
+        {
+            await RefrescarTabla();
+        }
+
+        async Task RefrescarTabla()
+        {
+            Vehiculos = await VehiculoBLL.GetVehiculo(expressionFiltrado, PaginacionActual);
+            VehiculoTotalesFiltrados = await VehiculoBLL.Contar(expressionFiltrado);
+            GetPaginasTotales();
+        }
+
+        void GetPaginasTotales()
+        {
+            int paginasTotalesTemp = (int)Math.Ceiling((double)VehiculoTotalesFiltrados / PaginacionActual.CantidadPorPagina);
+            PaginasTotales = paginasTotalesTemp < 1 ? 1 : paginasTotalesTemp;
+        }
+
+        void ModificarVehiculo(Vehiculo vehiculo)
+        {
+            vehiculoEnModificacion = vehiculo;
+            EsNuevoVehiculo = false;
+            MostraDialogoEditor = true;
+        }
+
+        void ModificarCliente(Vehiculo vehiculo)
+        {
+            vehiculoEnModificacion = vehiculo;
+            EsNuevoVehiculo = false;
+            MostraDialogoEditor = true;
+        }
+
+
+
+        void AgregarVehiculo()
+        {
+            vehiculoEnModificacion = new Vehiculo (AppState.ClaimsPrincipal.Identity.Name);
+            EsNuevoVehiculo = true;
+            MostraDialogoEditor = true;
+        }
+
+        async Task OcultarDialogo()
+        {
+            MostraDialogoEditor = false;
+            await RefrescarTabla();
+            QuitarFiltros();
+        }
+
+        void QuitarFiltros()
+        {
+            indexSelect = 0;
+            criterioDeBusqueda = "";
+            _ = FiltarVehiculo();
+        }
+
+        void Nuevo()
+        {
+            vehiculoEnModificacion = new Vehiculo(AppState.ClaimsPrincipal.Identity.Name);
+        }
+
+        async Task Guardar()
+        {
+
+            bool guardo;
+
+            guardo =  VehiculoBLL.Guardar(vehiculoEnModificacion);
+
+            if (guardo)
+            {
+                toast.ShowSuccess("Guardado ");
+                Nuevo();
+                await OcultarDialogo();
+            }
+            else
+                toast.ShowError("Error al guardar");
+
+        }
+
+        async Task Eliminar()
+        {
+            bool eliminado;
+
+            eliminado =  VehiculoBLL.Eliminar(vehiculoEnModificacion.VehiculoId);
+
+            if (eliminado)
+            {
+                toast.ShowSuccess("Eliminado");
+                Nuevo();
+                await OcultarDialogo();
+            }
+            else
+                toast.ShowError("Error al eliminar");
+        }
+
+        async Task FiltarVehiculo()
+        {
+
+            if (indexSelect == 0)
+            {//Todos
+                expressionFiltrado = c => true;
+
+            }
+            else if (indexSelect == 1)
+            {//Id
+
+                if (int.TryParse(criterioDeBusqueda, out int Id))
+                {
+                    expressionFiltrado = c => c.VehiculoId == Id;
+                }
+                else
+                {
+                    expressionFiltrado = c => true;
+                }
+            }
+            else if (indexSelect == 2)
+            {//Nombre
+                expressionFiltrado = e => e.Modelo.ToLower().Contains(criterioDeBusqueda.ToLower());
+            }
+            PaginacionActual.Pagina = 1;
+            await RefrescarTabla();
+            StateHasChanged();
+        }
+
+
+    }
