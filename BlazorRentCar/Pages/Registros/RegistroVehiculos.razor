@@ -198,7 +198,7 @@
 
         async Task RefrescarTabla()
         {
-            Vehiculos = await VehiculoBLL.GetVehiculo(expressionFiltrado, PaginacionActual);
+            Vehiculos = await VehiculoBLL.GetVehiculos(expressionFiltrado, PaginacionActual);
             VehiculoTotalesFiltrados = await VehiculoBLL.Contar(expressionFiltrado);
             GetPaginasTotales();
         }
@@ -256,7 +256,7 @@
 
             bool guardo;
 
-            guardo =  VehiculoBLL.Guardar(vehiculoEnModificacion);
+            guardo =  await VehiculoBLL.Guardar(vehiculoEnModificacion);
 
             if (guardo)
             {
@@ -273,7 +273,7 @@
         {
             bool eliminado;
 
-            eliminado =  VehiculoBLL.Eliminar(vehiculoEnModificacion.VehiculoId);
+            eliminado = await  VehiculoBLL.Eliminar(vehiculoEnModificacion.VehiculoId);
 
             if (eliminado)
             {
