@@ -35,7 +35,7 @@
     <div class="form-field">
         <label class="col-form-label-sm">Matricula </label>
         <div>
-            <InputText class="form-control-sm" @bind-Value="Vehiculo.Marca" /><br />
+            <InputText class="form-control-sm" @bind-Value="Vehiculo.Matricula" /><br />
             <ValidationMessage For="()=>Vehiculo.Matricula" />
         </div>
     </div>
@@ -151,10 +151,6 @@
 
 </div>
 
-
-
-
-<h3>FieldsVehiculo</h3>
 
 @code {
     [Parameter] public Vehiculo Vehiculo { get; set; }
