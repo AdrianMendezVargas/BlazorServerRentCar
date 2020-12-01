@@ -21,13 +21,15 @@ namespace BlazorRentCar.Models {
         public int ClienteId { get; set; }
 
         [Required]
-        public DateTime FechaInicial { get; set; } = DateTime.Now;
+        public DateTime FechaInicial { get; set; } = DateTime.Today;
 
         [Required]
-        public DateTime FechaFinal { get; set; } = DateTime.Now.AddDays(1);
+        public DateTime FechaFinal { get; set; } = DateTime.Today.AddDays(1);
 
         [Required]
-        public decimal MontoTotal { get; set; }
+        public decimal Monto { get; set; }
+
+        public DateTime Fecha { get; set; } = DateTime.Today;
 
         public bool Eliminada { get; set; } = false;
 
