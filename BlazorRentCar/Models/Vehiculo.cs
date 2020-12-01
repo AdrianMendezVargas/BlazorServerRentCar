@@ -11,13 +11,6 @@ namespace BlazorRentCar.Models {
         [Key]
         public int VehiculoId { get; set; }
         public string UserName { get; set; }
-        [Required(ErrorMessage = "Es obligatorio asignarle al vehiculo un importador")]
-        [ForeignKey("ImportadorId")]
-
-        public int ImportadorId { get; set; }
-        [Required(ErrorMessage = "Es obligatorio introducir la matricula")]
-        public string Matricula { get; set; }
-        [Required(ErrorMessage = "Es obligatorio introducir la placa")]
         public string Placa { get; set; }
         [Required(ErrorMessage = "Es obligatorio introducir la marca")]
         public string Marca { get; set; }
@@ -32,26 +25,22 @@ namespace BlazorRentCar.Models {
         [Required(ErrorMessage = "Es obligatorio introducir el kilometraje")]
         public int Kilometraje { get; set; }
         [Required(ErrorMessage = "Es obligatorio introducir el Año del vehiculo")]
-        public int Ano { get; set; }
-        [Required(ErrorMessage = "Es obligatorio introducir el chassis")]
         public string Chassis { get; set; }
         [Required(ErrorMessage = "Es obligatorio introducir la cantidad de pasajeros")]
-        public string Pasajeros { get; set; }
+        public int Pasajeros { get; set; }
         [Required(ErrorMessage = "Es obligatorio introducir la cantidad de puertas")]
-        public string Puertas { get; set; }
+        public int Puertas { get; set; }
         [Required(ErrorMessage = "Es obligatorio introducir la traccion del vehiculo")]
         public string Traccion { get; set; }
         public string Comentario { get; set; }
         [Required(ErrorMessage = "Es obligatorio introducir el valor del vehiculo")]
         public decimal Valor { get; set; }
-        [Required(ErrorMessage = "Es obligatorio introducir el tipo")]
         public string Tipo { get; set; }
 
         public Vehiculo(string userName)
         {
+            UserName = userName;
             VehiculoId = 0;
-            ImportadorId = 0;
-            Matricula = "";
             Marca = "";
             Modelo = "";
             Placa = "";
@@ -59,8 +48,8 @@ namespace BlazorRentCar.Models {
             Estado = VehiculoEstado.Disponible;
             PrecioDia = 0m;
             Chassis = "";
-            Pasajeros = "";
-            Puertas = "";
+            Pasajeros = 0;
+            Puertas = 0;
             Traccion = "";
             Comentario = "";
             Valor = 0m;

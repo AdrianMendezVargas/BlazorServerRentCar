@@ -4,14 +4,16 @@ using BlazorRentCar.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace BlazorRentCar.Migrations
 {
     [DbContext(typeof(Contexto))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201201161451_AddTableVehiculos")]
+    partial class AddTableVehiculos
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -55,29 +57,6 @@ namespace BlazorRentCar.Migrations
                     b.HasKey("ClienteId");
 
                     b.ToTable("Clientes");
-                });
-
-            modelBuilder.Entity("BlazorRentCar.Models.Cuota", b =>
-                {
-                    b.Property<int>("CuotaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<decimal>("Monto")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("VentaId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CuotaId");
-
-                    b.HasIndex("VentaId");
-
-                    b.ToTable("Cuota");
                 });
 
             modelBuilder.Entity("BlazorRentCar.Models.Renta", b =>
@@ -200,6 +179,9 @@ namespace BlazorRentCar.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("Ano")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("AñoFabricacion")
                         .HasColumnType("datetime2");
 
@@ -213,6 +195,9 @@ namespace BlazorRentCar.Migrations
                     b.Property<int>("Estado")
                         .HasColumnType("int");
 
+                    b.Property<int>("ImportadorId")
+                        .HasColumnType("int");
+
                     b.Property<int>("Kilometraje")
                         .HasColumnType("int");
 
@@ -220,23 +205,31 @@ namespace BlazorRentCar.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Matricula")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Modelo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("Pasajeros")
-                        .HasColumnType("int");
+                    b.Property<string>("Pasajeros")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Placa")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<decimal>("PrecioDia")
                         .HasColumnType("decimal(18,2)");
 
-                    b.Property<int>("Puertas")
-                        .HasColumnType("int");
+                    b.Property<string>("Puertas")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Tipo")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Traccion")
@@ -261,8 +254,8 @@ namespace BlazorRentCar.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Balance")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<int>("CantidadVehiculos")
+                        .HasColumnType("int");
 
                     b.Property<int>("ClienteId")
                         .HasColumnType("int");
@@ -270,21 +263,59 @@ namespace BlazorRentCar.Migrations
                     b.Property<string>("Comentarios")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double>("Descuentos")
+                        .HasColumnType("float");
+
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
-                    b.Property<decimal>("Monto")
-                        .HasColumnType("decimal(18,2)");
+                    b.Property<double>("ITBIS")
+                        .HasColumnType("float");
 
-                    b.Property<string>("UserName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("TipoFactura")
+                        .HasColumnType("int");
 
-                    b.Property<int>("VehiculoId")
+                    b.Property<double>("Total")
+                        .HasColumnType("float");
+
+                    b.Property<double>("TotalGeneral")
+                        .HasColumnType("float");
+
+                    b.Property<int>("UsuarioId")
                         .HasColumnType("int");
 
                     b.HasKey("VentaId");
 
                     b.ToTable("Ventas");
+                });
+
+            modelBuilder.Entity("BlazorRentCar.Models.VentasCuotaDetalle", b =>
+                {
+                    b.Property<int>("VentasDetalleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("Cantidad")
+                        .HasColumnType("int");
+
+                    b.Property<int>("CuotaId")
+                        .HasColumnType("int");
+
+                    b.Property<double>("Precio")
+                        .HasColumnType("float");
+
+                    b.Property<int>("VehiculoId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("VentaId")
+                        .HasColumnType("int");
+
+                    b.HasKey("VentasDetalleId");
+
+                    b.HasIndex("VentaId");
+
+                    b.ToTable("VentasCuotaDetalle");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole<string>", b =>
@@ -422,10 +453,10 @@ namespace BlazorRentCar.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("BlazorRentCar.Models.Cuota", b =>
+            modelBuilder.Entity("BlazorRentCar.Models.VentasCuotaDetalle", b =>
                 {
                     b.HasOne("BlazorRentCar.Models.Ventas", null)
-                        .WithMany("Cuotas")
+                        .WithMany("VentaDetalle")
                         .HasForeignKey("VentaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();

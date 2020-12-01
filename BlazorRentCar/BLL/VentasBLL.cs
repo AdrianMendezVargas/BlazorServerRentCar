@@ -46,7 +46,7 @@ namespace BlazorRentCar.BLL
             {
                 venta = _contexto.Ventas
                     .Where(v => v.VentaId == id)
-                    .Include(v => v.VentaDetalle)
+                    .Include(v => v.Cuotas)
                     .FirstOrDefault();
 
                 venta = _contexto.Ventas.Find(id);

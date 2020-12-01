@@ -28,18 +28,6 @@
 
 <div class="w-75">
     <div class="form-field">
-        <label class="col-form-label-sm">Importador Id: </label>
-        <InputNumber class="form-control-sm" @bind-Value="Vehiculo.ImportadorId" /><br />
-        <ValidationMessage For="()=>Vehiculo.ImportadorId" />
-    </div>
-    <div class="form-field">
-        <label class="col-form-label-sm">Matricula </label>
-        <div>
-            <InputText class="form-control-sm" @bind-Value="Vehiculo.Marca" /><br />
-            <ValidationMessage For="()=>Vehiculo.Matricula" />
-        </div>
-    </div>
-    <div class="form-field">
         <label class="col-form-label-sm">Placa</label>
         <div>
             <InputText class="form-control-sm" @bind-Value="Vehiculo.Placa" /><br />
@@ -87,14 +75,6 @@
     </div>
 
     <div class="form-field">
-        <label class="col-form-label-sm">Ano </label>
-        <div>
-            <InputDate class="form-control-sm" @bind-Value="Vehiculo.Ano" /><br />
-            <ValidationMessage For="()=>Vehiculo.Ano" />
-        </div>
-    </div>
-
-    <div class="form-field">
         <label class="col-form-label-sm">Chassis </label>
         <div>
             <InputText class="form-control-sm" @bind-Value="Vehiculo.Chassis" /><br />
@@ -105,14 +85,14 @@
     <div class="form-field">
         <label class="col-form-label-sm">Pasajeros </label>
         <div>
-            <InputText class="form-control-sm" @bind-Value="Vehiculo.Pasajeros" /><br />
+            <InputNumber class="form-control-sm" @bind-Value="Vehiculo.Pasajeros" /><br />
             <ValidationMessage For="()=>Vehiculo.Pasajeros" />
         </div>
     </div>
     <div class="form-field">
         <label class="col-form-label-sm">Puertas </label>
         <div>
-            <InputText class="form-control-sm" @bind-Value="Vehiculo.Puertas" /><br />
+            <InputNumber class="form-control-sm" @bind-Value="Vehiculo.Puertas" /><br />
             <ValidationMessage For="()=>Vehiculo.Puertas" />
         </div>
     </div>
@@ -143,18 +123,13 @@
     <div class="form-field">
         <label class="col-form-label-sm">Tipo </label>
         <div>
-            <InputNumber class="form-control-sm" @bind-Value="Vehiculo.Tipo" /><br />
+            <InputText class="form-control-sm" @bind-Value="Vehiculo.Tipo" /><br />
             <ValidationMessage For="()=>Vehiculo.Tipo" />
         </div>
     </div>
 
 
 </div>
-
-
-
-
-<h3>FieldsVehiculo</h3>
 
 @code {
     [Parameter] public Vehiculo Vehiculo { get; set; }

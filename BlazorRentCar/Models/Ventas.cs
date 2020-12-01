@@ -11,31 +11,36 @@ namespace BlazorRentCar.Models
     {
         [Key]
         public int VentaId { get; set; }
+        public string UserName { get; set; }
+
         [Required(ErrorMessage = "Es obligatorio asignarle la venta a un cliente")]
-        [ForeignKey("ClienteId")]
         public int ClienteId { get; set; }
-        public int UsuarioId { get; set; }
-        [Required(ErrorMessage = "Es obligatorio introducir la fecha")]
+
+        [Required(ErrorMessage = "Es obligatorio asignarle la venta a un vehículo")]
+        public int VehiculoId { get; set; }
+
+        public decimal Monto { get; private set; }
+        public decimal Balance { get; private set; }
+
         public DateTime Fecha { get; set; } = DateTime.Today;
-
-        [Required(ErrorMessage = "Seleccione un tipo de factura")]
-        [Range(minimum: 1, maximum: double.MaxValue, ErrorMessage = "Debe seleccionar el tipo de factura")]
-        public int TipoFactura { get; set; }
-        [Required(ErrorMessage = "Es obligatorio introducir el total")]
-        public double Total { get; set; }
-        [Required(ErrorMessage = "Es obligatorio introducir el ITBIS")]
-        public double ITBIS { get; set; }
-        [Required(ErrorMessage = "Es obligatorio introducir los descuentos")]
-        public double Descuentos { get; set; }
-        [Required(ErrorMessage = "Es obligatorio introducir el total general")]
-        public double TotalGeneral { get; set; }
         public string Comentarios { get; set; }
-        public int CantidadVehiculos { get; set; }
        
+
         [ForeignKey("VentaId")]
-        public virtual List<VentasCuotaDetalle> VentaDetalle { get; set; } = new List<VentasCuotaDetalle>();
+        public virtual List<Cuota> Cuotas { get; private set; } = new List<Cuota>();
 
-
+        public void AgregarCuota(Cuota cuota) {
+            Cuotas.Add(cuota);
+            Monto += cuota.Monto;
+            Balance += cuota.Balance;
+        }
+        public decimal GetBalance() {
+            decimal balance = 0;
+            foreach (var cuota in Cuotas) {
+                balance += cuota.Balance;
+            }
+            return balance;
+        }
 
 
     }

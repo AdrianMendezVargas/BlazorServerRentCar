@@ -63,15 +63,12 @@
                         <thead class="thead-light">
                             <tr>
                                 <th>Vehiculo Id</th>
-                                <th>Importador Id</th>
-                                <th>Matricula</th>
                                 <th>Placa </th>
                                 <th>Marca</th>
                                 <th>Modelo</th>
                                 <th>AñoFabricacion</th>
                                 <th>PrecioDia</th>
                                 <th>Kilometraje</th>
-                                <th>Ano</th>
                                 <th>Chassis</th>
                                 <th>Pasajeros</th>
                                 <th>Puertas</th>
@@ -86,15 +83,12 @@
                             {
                                 <tr>
                                     <td>@vehiculo.VehiculoId</td>
-                                    <td>@vehiculo.ImportadorId</td>
-                                    <td>@vehiculo.Matricula</td>
                                     <td>@vehiculo.Placa</td>
                                     <td>@vehiculo.Marca</td>
                                     <td>@vehiculo.Modelo</td>
                                     <td>@vehiculo.AñoFabricacion</td>
                                     <td>@vehiculo.PrecioDia</td>
                                     <td>@vehiculo.Kilometraje</td>
-                                    <td>@vehiculo.Ano</td>
                                     <td>@vehiculo.Chassis</td>
                                     <td>@vehiculo.Pasajeros</td>
                                     <td>@vehiculo.Puertas</td>
@@ -294,7 +288,7 @@
 
             }
             else if (indexSelect == 1)
-            {//Id
+            {//I
 
                 if (int.TryParse(criterioDeBusqueda, out int Id))
                 {

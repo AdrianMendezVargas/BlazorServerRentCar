@@ -59,7 +59,7 @@ namespace BlazorRentCar.Migrations
                     b.ToTable("Clientes");
                 });
 
-            modelBuilder.Entity("BlazorRentCar.Models.Cuotas", b =>
+            modelBuilder.Entity("BlazorRentCar.Models.Cuota", b =>
                 {
                     b.Property<int>("CuotaId")
                         .ValueGeneratedOnAdd()
