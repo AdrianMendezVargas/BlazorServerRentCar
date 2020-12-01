@@ -1,0 +1,161 @@
+﻿<style>
+    .form-field {
+        display: flex;
+        margin: 0.5rem;
+    }
+
+        .form-field > label {
+            width: 8rem;
+        }
+
+        .form-field > div {
+            flex-grow: 1;
+        }
+
+        .form-field input {
+            width: 100%;
+            background-color: #fff;
+            background-clip: padding-box;
+            border: 1px solid #ced4da;
+            border-radius: .25rem;
+            transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+        }
+
+        .form-field .invalid {
+            border-color: red;
+        }
+</style>
+
+<div class="w-75">
+    <div class="form-field">
+        <label class="col-form-label-sm">Importador Id: </label>
+        <InputNumber class="form-control-sm" @bind-Value="Vehiculo.ImportadorId" /><br />
+        <ValidationMessage For="()=>Vehiculo.ImportadorId" />
+    </div>
+    <div class="form-field">
+        <label class="col-form-label-sm">Matricula </label>
+        <div>
+            <InputText class="form-control-sm" @bind-Value="Vehiculo.Marca" /><br />
+            <ValidationMessage For="()=>Vehiculo.Matricula" />
+        </div>
+    </div>
+    <div class="form-field">
+        <label class="col-form-label-sm">Placa</label>
+        <div>
+            <InputText class="form-control-sm" @bind-Value="Vehiculo.Placa" /><br />
+            <ValidationMessage For="()=>Vehiculo.Placa" />
+        </div>
+    </div>
+    <div class="form-field">
+        <label class="col-form-label-sm">Marca </label>
+        <div>
+            <InputText class="form-control-sm" @bind-Value="Vehiculo.Marca" /><br />
+            <ValidationMessage For="()=>Vehiculo.Marca" />
+        </div>
+    </div>
+
+    <div class="form-field">
+        <label class="col-form-label-sm">Modelo </label>
+        <div>
+            <InputText class="form-control-sm" @bind-Value="Vehiculo.Modelo" /><br />
+            <ValidationMessage For="()=>Vehiculo.Modelo" />
+        </div>
+    </div>
+
+    <div class="form-field">
+        <label class="col-form-label-sm">AñoFabricacion </label>
+        <div>
+            <InputDate class="form-control-sm" @bind-Value="Vehiculo.AñoFabricacion" /><br />
+            <ValidationMessage For="()=>Vehiculo.AñoFabricacion" />
+        </div>
+    </div>
+
+    <div class="form-field">
+        <label class="col-form-label-sm">PrecioDia </label>
+        <div>
+            <InputNumber class="form-control-sm" @bind-Value="Vehiculo.PrecioDia" /><br />
+            <ValidationMessage For="()=>Vehiculo.PrecioDia" />
+        </div>
+    </div>
+
+    <div class="form-field">
+        <label class="col-form-label-sm">Kilometraje </label>
+        <div>
+            <InputNumber class="form-control-sm" @bind-Value="Vehiculo.Kilometraje" /><br />
+            <ValidationMessage For="()=>Vehiculo.Kilometraje" />
+        </div>
+    </div>
+
+    <div class="form-field">
+        <label class="col-form-label-sm">Ano </label>
+        <div>
+            <InputDate class="form-control-sm" @bind-Value="Vehiculo.Ano" /><br />
+            <ValidationMessage For="()=>Vehiculo.Ano" />
+        </div>
+    </div>
+
+    <div class="form-field">
+        <label class="col-form-label-sm">Chassis </label>
+        <div>
+            <InputText class="form-control-sm" @bind-Value="Vehiculo.Chassis" /><br />
+            <ValidationMessage For="()=>Vehiculo.Chassis" />
+        </div>
+    </div>
+
+    <div class="form-field">
+        <label class="col-form-label-sm">Pasajeros </label>
+        <div>
+            <InputText class="form-control-sm" @bind-Value="Vehiculo.Pasajeros" /><br />
+            <ValidationMessage For="()=>Vehiculo.Pasajeros" />
+        </div>
+    </div>
+    <div class="form-field">
+        <label class="col-form-label-sm">Puertas </label>
+        <div>
+            <InputText class="form-control-sm" @bind-Value="Vehiculo.Puertas" /><br />
+            <ValidationMessage For="()=>Vehiculo.Puertas" />
+        </div>
+    </div>
+    <div class="form-field">
+        <label class="col-form-label-sm">Traccion </label>
+        <div>
+            <InputText class="form-control-sm" @bind-Value="Vehiculo.Traccion" /><br />
+            <ValidationMessage For="()=>Vehiculo.Traccion" />
+        </div>
+    </div>
+
+    <div class="form-field">
+        <label class="col-form-label-sm">Comentario </label>
+        <div>
+            <InputText class="form-control-sm" @bind-Value="Vehiculo.Comentario" /><br />
+            <ValidationMessage For="()=>Vehiculo.Comentario" />
+        </div>
+    </div>
+
+    <div class="form-field">
+        <label class="col-form-label-sm">Valor </label>
+        <div>
+            <InputNumber class="form-control-sm" @bind-Value="Vehiculo.Valor" /><br />
+            <ValidationMessage For="()=>Vehiculo.Valor" />
+        </div>
+    </div>
+
+    <div class="form-field">
+        <label class="col-form-label-sm">Tipo </label>
+        <div>
+            <InputNumber class="form-control-sm" @bind-Value="Vehiculo.Tipo" /><br />
+            <ValidationMessage For="()=>Vehiculo.Tipo" />
+        </div>
+    </div>
+
+
+</div>
+
+
+
+
+<h3>FieldsVehiculo</h3>
+
+@code {
+    [Parameter] public Vehiculo Vehiculo { get; set; }
+}
