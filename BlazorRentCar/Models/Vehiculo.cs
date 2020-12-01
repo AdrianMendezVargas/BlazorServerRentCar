@@ -11,6 +11,7 @@ namespace BlazorRentCar.Models {
         [Key]
         public int VehiculoId { get; set; }
         public string UserName { get; set; }
+        [Required(ErrorMessage = "Es obligatorio introducir la placa")]
         public string Placa { get; set; }
         [Required(ErrorMessage = "Es obligatorio introducir la marca")]
         public string Marca { get; set; }
@@ -41,21 +42,8 @@ namespace BlazorRentCar.Models {
         {
             UserName = userName;
             VehiculoId = 0;
-            Marca = "";
-            Modelo = "";
-            Placa = "";
             AñoFabricacion = DateTime.Now;
             Estado = VehiculoEstado.Disponible;
-            PrecioDia = 0m;
-            Chassis = "";
-            Pasajeros = 0;
-            Puertas = 0;
-            Traccion = "";
-            Comentario = "";
-            Valor = 0m;
-            Tipo = "";
-
-
         }
 
     }
