@@ -1,0 +1,290 @@
+﻿@page "/registro-cobros"
+
+@attribute [Authorize]
+
+@inject AppState appState
+@inject IToastService toast
+
+<div class="container mt-3">
+    <div class="card shadow-lg">
+        <EditForm id="form" Model="cobro" OnValidSubmit="Guardar">
+            <div class="card-header bg-dark">
+                <h3><i class="fa fa-money-bill mr-2"></i>Registro cobros</h3>
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label class="col col-form-label">Cobro id:</label>
+                    <div class="col-sm-10 form-inline">
+                        <InputNumber @bind-Value="cobro.CobroId" class="form-control" />
+                        <button type="button" class="btn btn-outline-primary ml-3" @onclick="Buscar">Buscar<i class="oi oi-magnifying-glass ml-2"></i></button>
+                    </div>
+                </div>
+                @*Datos del cliente*@
+                <div class="elevation-1">
+                    <div class="card-header bg-gray">
+                        <div class="form-group-sm row">
+                            <label class="col-form-label ml-2 mr-2">Cliente</label>
+                            <div class="col-sm p-0">
+                                <button type="button" class="btn btn-dark border-light" @onclick="AbrirDialogoClientes"><i class="oi oi-list-rich mr-2"></i>Seleccionar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body mb-3">
+                        <div class="form-group row mb-0">
+                            <div class="col-sm mt-1">
+                                <input value="@cliente?.Nombres" readonly placeholder="Nombres" class="form-control m-0" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@cliente?.Apellidos" readonly placeholder="Apellidos" class="form-control" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@cliente?.Email" readonly placeholder="Email" class="form-control m-0" />
+                            </div>
+                        </div>
+                        @if (cliente == null) {
+                            <p class="text-red">Seleccione un cliente</p>
+                        }
+                    </div>
+                </div>
+                @*Datos del venta*@
+                <div class="elevation-1">
+                    <div class="card-header bg-gray">
+                        <div class="form-group-sm row">
+                            <label class="col-form-label ml-2 mr-2">Venta </label>
+                            <div class="col-sm p-0">
+                                <button type="button" class="btn btn-dark border-light" @onclick="AbrirDialogoVentas"><i class="oi oi-list-rich mr-2"></i>Seleccionar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body mb-3">
+                        <div class="form-group row mb-0">
+                            <div class="col-sm mt-1">
+                                <input value="@venta?.VentaId" readonly placeholder="Id" class="form-control m-0" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@venta?.Monto.ToString("C")" readonly placeholder="Mondo" class="form-control" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@venta?.Balance.ToString("C")" readonly placeholder="Balance" class="form-control m-0" />
+                            </div>
+                        </div>
+                        <div class="form-group row mb-0">
+                            <div class="col-sm mt-1">
+                                <input value="@venta?.Balance" readonly placeholder="Balance" class="form-control m-0" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@venta?.VehiculoId" readonly placeholder="VehiculoId" class="form-control" />
+                            </div><div class="col-sm mt-1">
+                                <input value="@venta?.Fecha" readonly placeholder="Fecha" class="form-control" />
+                            </div>
+                        </div>
+                        @if (venta == null) {
+                            <p class="text-red">Seleccione una venta</p>
+                        }
+                    </div>
+                </div>
+                @*Cuotas*@
+                @if (venta != null) {
+                    <div class="elevation-1">
+                        <div class="card-header bg-gray">
+                            <div class="form-group-sm row">
+                                <label class="col-form-label ml-2">Cuotas pendientes:</label>
+                            </div>
+                        </div>
+                        <div class="card-body table-responsive mb-3" style="max-height:500px;">
+                            <table class="table table-hover text-nowrap">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Monto</th>
+                                        <th>Balance</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var cuota in venta.Cuotas.Where(c => c.Pendiente)) {
+                                        <tr>
+                                            <td>@cuota.CuotaId</td>
+                                            <td>@cuota.Monto</td>
+                                            <td>@cuota.Balance</td>
+                                            <td><input type="checkbox" disabled="@(!cuota.Pendiente)" checked="@(EstaSelecionada(cuota))" @onchange="()=> PagarClick(cuota)" /></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                }
+                @*Monto de cobro*@
+                <div class="form-group row mb-0">
+                    <label class="col-auto col-form-label">Monto:</label>
+                    <div class="col">
+                        <h4>@cobro.Monto.ToString("C")</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="card-footer text-center">
+                <button class="btn btn-outline-dark" @onclick="Nuevo">Nuevo</button>
+                <input type="submit" form="form" class="btn btn-outline-success" value="Guardar" />
+                <button class="btn btn-outline-danger" @onclick="Eliminar">Eliminar</button>
+            </div>
+            <DataAnnotationsValidator />
+        </EditForm>
+    </div>
+</div>
+
+@if (MostrarClientesDialogo) {
+    <Dialogo Title="Seleccione al cliente" OnClose="OcultarDialogo">
+        <Body>
+            <RegistroClientes ModoSeleccionCliente="true" OnClienteSelected="(Cliente c)=> SeleccionarCliente(c)" />
+        </Body>
+    </Dialogo>
+} else if (MostrarVentasDialogo) {
+
+}
+
+
+@code {
+
+    [Inject] public CobrosBLL CobrosBLL { get; set; }
+    [Inject] public ClientesBLL ClientesBLL { get; set; }
+    [Inject] public VentasBLL VentasBLL { get; set; }
+
+    Cobro cobro = new Cobro("");
+    Cliente cliente;
+
+
+    Ventas venta;
+
+    protected override void OnInitialized() {
+        //TODO: quitar asignacion
+        venta = new Ventas("") {
+            VentaId = 1 ,
+            ClienteId = 1 ,
+            Comentarios = "comment" ,
+            VehiculoId = 1
+        };
+
+        for (int i = 0 ; i < 10 ; i++) {
+            venta.AgregarCuota(new Cuota(1000) { CuotaId = i + 1 });
+        }
+        cobro.VentaId = venta.VentaId;
+    }
+
+    List<Cuota> CuotasAPagar = new List<Cuota>();
+
+    bool MostrarClientesDialogo;
+    bool MostrarVentasDialogo;
+
+    void SeleccionarCliente(Cliente _cliente) {
+        cliente = _cliente;
+        venta = null;
+        OcultarDialogo();
+    }
+
+    void AbrirDialogoClientes() {
+        MostrarClientesDialogo = true;
+    }
+
+    void AbrirDialogoVentas() {
+        MostrarVentasDialogo = true;
+    }
+
+    void OcultarDialogo() {
+        MostrarClientesDialogo = false;
+        MostrarVentasDialogo = false;
+    }
+
+    void PagarClick(Cuota cuota) {
+        if (cuota.Pendiente) {
+
+            if (CuotasAPagar.Exists(c => c.CuotaId == cuota.CuotaId)) {
+                CuotasAPagar.Remove(CuotasAPagar.Find(c => c.CuotaId == cuota.CuotaId));
+            } else {
+                CuotasAPagar.Add(cuota);
+            }
+
+            cobro.Detalles.Clear();
+            foreach (var cuotaPagar in CuotasAPagar) {
+
+                cobro.Detalles.Add(new CobroCuota(cuotaPagar.Balance));
+            }
+            cobro.CalcularMonto();
+        } else {
+            toast.ShowInfo("Esta factura esta pagada");
+        }
+
+    }
+
+    async Task SetCobro(Cobro _cobro) {
+        venta = VentasBLL.Buscar(_cobro.VentaId);
+        cobro.VentaId = venta?.VehiculoId ?? 0;
+
+        cliente = await ClientesBLL.Buscar(venta.ClienteId);
+    }
+
+    bool EstaSelecionada(Cuota cuota) {
+        if (CuotasAPagar.Exists(c => c.CuotaId == cuota.CuotaId)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    void Nuevo() {
+        cobro = new Cobro(appState.ClaimsPrincipal.Identity.Name);
+        venta = null;
+        cliente = null;
+    }
+
+    async Task Eliminar() {
+
+        if (await CobrosBLL.Existe(cobro.CobroId)) {
+
+            bool eliminado = await CobrosBLL.Eliminar(cobro.CobroId);
+
+            if (eliminado) {
+                toast.ShowSuccess("Eliminado");
+                Nuevo();
+            } else
+                toast.ShowError("Error al eliminar");
+
+        } else {
+            toast.ShowWarning("Este cobro no existe");
+        }
+
+    }
+
+    async Task Buscar() {
+
+        var cobroBuscada = await CobrosBLL.Buscar(cobro.CobroId);
+
+        if (cobroBuscada != null) {
+            await SetCobro(cobroBuscada);
+        } else {
+            toast.ShowWarning("No encontrado");
+            Nuevo();
+        }
+    }
+
+    async Task Guardar() {
+        if (CuotasAPagar.Count > 0) {
+            cobro.VentaId = venta.VentaId;
+            bool guardo = await CobrosBLL.Guardar(cobro);
+
+            if (guardo) {
+                toast.ShowSuccess("Guardado ");
+
+            } else
+                toast.ShowError("Error al guardar");
+        } else {
+            toast.ShowWarning("Debe agregar cobros");
+        }
+
+    }
+
+    async Task<bool> Existe() {
+        return await CobrosBLL.Existe(cobro.CobroId);
+    }
+
+}

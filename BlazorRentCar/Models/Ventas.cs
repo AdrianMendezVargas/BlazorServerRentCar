@@ -20,7 +20,7 @@ namespace BlazorRentCar.Models
         public int VehiculoId { get; set; }
 
         public decimal Monto { get; private set; }
-        public decimal Balance { get; private set; }
+        public decimal Balance { get; set; }
 
         public DateTime Fecha { get; set; } = DateTime.Today;
         public string Comentarios { get; set; }
@@ -42,6 +42,23 @@ namespace BlazorRentCar.Models
             return balance;
         }
 
+        public void AgregarPago(decimal montoPago) {
+            Cuotas = Cuotas.OrderBy(c => c.Balance).ToList();
+            foreach (var cuota in Cuotas.Where(c => c.Pendiente)) {
+                if (montoPago > cuota.Balance) {
+                    montoPago -= cuota.Balance;
+                    cuota.Balance = 0;
+                } else {
+                    cuota.Balance -= montoPago;
+                    montoPago = 0;
+                    break;
+                }
+            }
+        }
+
+        public Ventas(string userName) {
+            UserName = userName;
+        }
 
     }
 }

@@ -49,7 +49,9 @@ namespace BlazorRentCar {
             services.AddScoped<IUserClaimsPrincipalFactory<Usuarios> , MyUserClaimsPrincipalFactory>();
             services.AddTransient<UserInfoBLL>();
             services.AddTransient<VehiculoBLL>();
+            services.AddTransient<VentasBLL>();
             services.AddTransient<RentasBLL>();
+            services.AddTransient<CobrosBLL>();
         }
 
 

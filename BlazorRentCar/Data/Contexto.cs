@@ -10,6 +10,7 @@ namespace BlazorRentCar.Data {
     public class Contexto : IdentityDbContext<Usuarios, IdentityRole<string>, string> {
         public DbSet<Cliente> Clientes { get; set; }
         public DbSet<Renta> Rentas { get; set; }
+        public DbSet<Cobro> Cobros { get; set; }
         public DbSet<Ventas> Ventas { get; set; }
         public DbSet<Vehiculo> Vehiculos { get; set; }
 

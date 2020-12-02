@@ -108,12 +108,19 @@ namespace BlazorRentCar.BLL {
         }
 
         public async Task<List<Cliente>> GetClientes(Expression<Func<Cliente, bool>> expression, Paginacion paginacion) {
-            await Task.Delay(01); //Para dar tiempo a renderizar el mensaje de carga
+            await Task.Delay(01);
 
-            var queryable = _contexto.Clientes.AsQueryable().Where(expression).Where(c => c.UserName == _appState.ClaimsPrincipal.Identity.Name);
+            var queryable = _contexto.Clientes.AsNoTracking().AsQueryable().Where(expression).Where(c => c.UserName == _appState.ClaimsPrincipal.Identity.Name);
             var lista = await queryable.Paginar(paginacion).ToListAsync();
             return lista;
 
+        }
+
+        public async Task<List<Cliente>> GetAllClientes() {
+            await Task.Delay(01);
+            return await _contexto.Clientes.AsNoTracking()
+                .Where(c => c.UserName == _appState.ClaimsPrincipal.Identity.Name)
+                .ToListAsync();
         }
 
         public async Task<int> Contar(Expression<Func<Cliente , bool>> expression) {

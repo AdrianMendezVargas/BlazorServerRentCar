@@ -14,7 +14,7 @@ namespace BlazorRentCar.Models
         public int VentaId { get; set; }
         public decimal Monto { get; set; }
         public decimal Balance { get; set; }
-        public bool EstaPagada => Balance == 0;
+        public bool Pendiente => Balance > 0;
 
         public Cuota(decimal monto) {
             Monto = monto;
