@@ -1,0 +1,205 @@
+﻿@page "/consulta-vehiculos"
+@inject AppState AppState
+@inject IToastService toast
+@attribute [Authorize]
+
+<div class="container mt-3">
+    <div class="card shadow-lg w-100">
+        <div class="card-header bg-dark">
+            <div class="form-row">
+                <div class="col-sm">
+                    <h3 class="text-light"><i class="fa fa-car mr-3" />Vehiculo</h3>
+
+                </div>
+                <div class="col-sm">
+                    <a class="btn btn-dark border-light" href="registro-vehiculo">
+                        <i class="oi oi-plus" />
+                        Agregar
+                    </a>
+
+                </div>
+                <div class="col-sm">
+                    <select @bind="indexSelect" class="custom-select">
+                        <option value="0">Filtrar por</option>
+                        <option value="1">Id</option>
+                    </select>
+
+                </div>
+                <div class="col-sm">
+                    <input class="form-control w-100" type="@(indexSelect == 1 ? "number" : "text")" @bind="criterioDeBusqueda" />
+
+                </div>
+                <div class="col-sm text-center">
+                    <button class="btn btn-dark border-light" @onclick="FiltarVehiculo">
+                        <i class="oi oi-magnifying-glass" />
+                        Buscar
+                    </button>
+
+                </div>
+
+            </div>
+            
+        </div>
+        <div class="card-body table-responsive">
+            @if (Vehiculos == null)
+            {
+            <div>
+                <h4>Cargando...</h4>
+            </div>
+            }
+            else
+            {
+        <table class="table table-hover text-nowrap">
+            <thead class="thead-light">
+                <tr>
+                    <th>Vehiculo Id</th>
+                    <th>Placa</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>AñoFabricacion</th>
+                    <th>PrecioDia</th>
+                    <th>Kilometraje</th>
+                    <th> Chassis</th>
+                    <th> Pasajeros</th>
+                    <th>Puertas</th>
+                    <th>Traccion</th>
+                    <th>Comentario</th>
+                    <th>Valor</th>
+                    <th>Tipo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var vehiculo in Vehiculos)
+                {
+                    <tr>
+                        <td>@vehiculo.VehiculoId</td>
+                        <td>@vehiculo.Marca</td>
+                        <td>@vehiculo.Modelo</td>
+                        <td>@vehiculo.AñoFabricacion</td>
+                        <td>@vehiculo.PrecioDia</td>
+                        <td>@vehiculo.Kilometraje</td>
+                        <td> @vehiculo.Chassis</td>
+                        <td> @vehiculo.Pasajeros</td>
+                        <td> @vehiculo.Puertas</td>
+                        <td>@vehiculo.Traccion</td>
+                        <td>@vehiculo.Comentario</td>
+                        <td> @vehiculo.Valor</td>
+                        <td>@vehiculo.Tipo</td>
+                        <td>@vehiculo.Tipo</td>
+                        <td><a class="btn btn-outline-dark" href="registro-rentas/@vehiculo.VehiculoId">Ver</a></td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="7">
+                        <Paginas CambioPaginacion="CambioPaginacion"
+                                 PaginasTotales="PaginasTotales"
+                                 Paginacion="PaginacionActual"
+                                 Radio="2" />
+                    </th>
+                </tr>
+            </tfoot>
+        </table>
+
+            }
+
+</div>
+
+    </div>
+
+</div>
+
+
+@code {
+
+    [Inject]
+    public VehiculoBLL VehiculoBLL { get; set; }
+
+    bool MostraDialogoEditor = false;
+    bool EsNuevoVehiculo = false;
+    string Title;
+
+    Paginacion PaginacionActual = new Paginacion();
+    int VehiculoTotalesFiltradas;
+    Expression<Func<Vehiculo, bool>> expressionFiltrado = c => true;
+    int PaginasTotales;
+
+    int indexSelect = 0; //indice actual del select
+    string criterioDeBusqueda;
+
+    public List<Vehiculo> Vehiculos { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        await RefrescarTabla();
+    }
+
+    async Task CambioPaginacion()
+    {
+        await RefrescarTabla();
+    }
+
+    async Task RefrescarTabla()
+    {
+        Vehiculos = await VehiculoBLL.GetVehiculos(expressionFiltrado, PaginacionActual);
+        VehiculoTotalesFiltradas = await VehiculoBLL.Contar(expressionFiltrado);
+        GetPaginasTotales();
+    }
+
+    void GetPaginasTotales()
+    {
+        int paginasTotalesTemp = (int)Math.Ceiling((double)VehiculoTotalesFiltradas / PaginacionActual.CantidadPorPagina);
+        PaginasTotales = paginasTotalesTemp < 1 ? 1 : paginasTotalesTemp;
+    }
+
+    void QuitarFiltros()
+    {
+        indexSelect = 0;
+        criterioDeBusqueda = "";
+        _ = FiltarVehiculo();
+    }
+
+
+    async Task Eliminar(Vehiculo vehiculo)
+    {
+        bool eliminado;
+
+        eliminado = await VehiculoBLL.Eliminar(vehiculo.VehiculoId);
+
+        if (eliminado)
+        {
+            toast.ShowSuccess("Eliminado");
+        }
+        else
+            toast.ShowError("Error al eliminar");
+    }
+
+    async Task FiltarVehiculo()
+    {
+
+        if (indexSelect == 0)
+        {//Todos
+            expressionFiltrado = c => true;
+
+        }
+        else if (indexSelect == 1)
+        {//Id
+
+            if (int.TryParse(criterioDeBusqueda, out int Id))
+            {
+                expressionFiltrado = c => c.VehiculoId == Id;
+            }
+            else
+            {
+                expressionFiltrado = c => true;
+            }
+        }
+        PaginacionActual.Pagina = 1;
+        await RefrescarTabla();
+        StateHasChanged();
+
+    }
+
+}

@@ -1,5 +1,278 @@
-﻿<h3>RegistroVentas</h3>
+﻿@page "/registro-ventas"
+
+@attribute [Authorize]
+
+@inject AppState appState
+@inject IToastService toast
+
+<div class="container mt-3">
+    <div class="card shadow-lg">
+        <EditForm id="form" Model="ventas" OnValidSubmit="Guardar">
+            <div class="card-header bg-dark">
+                <h3><i class="fa fa-sales-check mr-2"></i>Registro ventas</h3>
+
+            </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    <label class="col col-form-label">Venta Id:</label>
+                    <div class="col-sm-10 form-inline">
+                        <InputNumber @bind-Value="ventas.VentaId" class="form-control" />
+                        <button type="button" class="btn btn-outline-primary ml-3" @onclick="Buscar">Buscar<i class="oi oi-magnifying-glass ml-2"></i></button>
+
+                    </div>
+
+                </div>
+                @*Datos del cliente*@
+                <div class="elevation-1">
+                    <div class="card-header bg-gray">
+                        <div class="form-group-sm row">
+                            <label class="col-form-label ml-2 mr-2">Cliente</label>
+                            <div class="col-sm p-0">
+                                <button type="button" class="btn btn-dark border-light" @onclick="AbrirDialogoClientes"><i class="oi oi-list-rich mr-2"></i>Seleccionar</button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="card-body mb-3">
+                        <div class="form-group row mb-0">
+                            <div class="col-sm mt-1">
+                                <input value="@cliente?.Nombres" readonly placeholder="Nombres" class="form-control m-0" />
+
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@cliente?.Apellidos" readonly placeholder="Apellidos" class="form-control" />
+
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@cliente?.Email" readonly placeholder="Email" class="form-control m-0" />
+
+                            </div>
+
+
+                        </div>
+                        <ValidationMessage For="()=>ventas.ClienteId" />
+
+                    </div>
+
+                </div>
+                @*Datos del vehiculo*@
+                <div class="elevation-1">
+                    <div class="card-header bg-gray">
+                        <div class="form-group-sm row">
+                            <label class="col-form-label ml-2 mr-2">Veh&iacute;culo </label>
+                            <div class="col-sm p-0">
+                                <button type="button" class="btn btn-dark border-light" @onclick="AbrirDialogoVehiculos"><i class="oi oi-list-rich mr-2"></i>Seleccionar</button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <div class="card-body mb-3">
+                        <div class="form-group row mb-0">
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.Marca" readonly placeholder="Marca" class="form-control m-0" />
+
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.Modelo" readonly placeholder="Modelo" class="form-control" />
+
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.AñoFabricacion" readonly placeholder="Año" class="form-control m-0" />
+
+                            </div>
+
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.PrecioDia" readonly placeholder="Precio por dia" class="form-control m-0" />
+
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.Tipo" readonly placeholder="Tipo" class="form-control" />
+
+                            </div>
+                            <div class="col-sm mt-1">
+                                <input value="@vehiculo?.Pasajeros" readonly placeholder="Pasajeros" class="form-control m-0" />
+
+                            </div>
+
+                        </div>
+                        <ValidationMessage For="()=>ventas.VehiculoId" />
+
+                    </div>
+
+                </div>
+                @*Cuotas*@
+                <div class="form-group col-md-3">
+                    <label>#Cuotas</label>
+                    <div class="input-group">
+                        <InputNumber @bind-Value="CantidadCuotas" min="0" class="form-control" />
+                    </div>
+
+                </div>
+
+                @*Tabla del detalle*@
+                <table class="table">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th scope="col"> #Cuotas</th>
+                            <th scope="col"> Monto</th>
+                            <th scope="col"> Balance</th>
+                            <th scope="col"> Pagada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var auxiliar in ventas.Cuotas)
+                        {
+                            <tr>
+                                <td>@auxiliar.CuotaId</td>
+                                <td>@auxiliar.VentaId</td>
+                                <td>@auxiliar.Monto</td>
+                                <td>@auxiliar.Balance</td>
+                                <td>@auxiliar.EstaPagada</td>
+                                <td></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            </div>
+            <div class="card-footer text-center">
+                <button class="btn btn-outline-dark" @onclick="Nuevo">Nuevo</button>
+                <input type="submit" form="form" class="btn btn-outline-success" value="Guardar" />
+                <button class="btn btn-outline-danger" @onclick="Eliminar">Eliminar</button>
+            </div>
+            <DataAnnotationsValidator />
+        </EditForm>
+
+     </div>
+</div>
+
+
+
+@if (MostrarClientesDialogo)
+{
+    <Dialogo Title="Seleccione al cliente" OnClose="OcultarDialogo">
+        <Body>
+            <RegistroClientes ModoSeleccionCliente="true" OnClienteSelected="(Cliente c)=> SeleccionarCliente(c)" />
+        </Body>
+    </Dialogo>
+}
+else if (MostrarVehiculosDialogo)
+{
+    <Dialogo Title="Seleccione el vehiculo" OnClose="OcultarDialogo">
+        <Body>
+
+        </Body>
+    </Dialogo>
+}
 
 @code {
+
+    Ventas ventas = new Ventas("anonimo");
+
+    Vehiculo vehiculo;
+    Cliente cliente;
+    Cuota cuota;
+
+    int CantidadCuotas;
+
+    bool MostrarClientesDialogo;
+    bool MostrarVehiculosDialogo;
+
+    [Inject] public VentasBLL VentasBLL { get; set; }
+
+    [Parameter] public int VentaId { get; set; }
+
+    void OcultarDialogo()
+    {
+        MostrarClientesDialogo = false;
+        MostrarVehiculosDialogo = false;
+    }
+
+
+    void Nuevo()
+    {
+        ventas = new Ventas(appState.ClaimsPrincipal.Identity.Name);
+        vehiculo = null;
+        cliente = null;
+    }
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        if (firstRender)
+        {
+            Nuevo();
+            StateHasChanged();
+        }
+    }
+
+    void Guardar()
+    {
+        bool guardo = VentasBLL.Guardar(ventas);
+        if (guardo)
+        {
+            toast.ShowSuccess("Guardado");
+            Nuevo();
+        }
+        else
+            toast.ShowError("Error al guardar");
+
+    }
+
+
+    void Buscar()
+    {
+        var ventaBuscado =  VentasBLL.Buscar(ventas.VentaId);
+
+        if (ventaBuscado != null)
+        {
+            ventas = ventaBuscado;
+        }
+        else
+        {
+            toast.ShowWarning("No encontrado");
+            Nuevo();
+        }
+
+    }
+    void Eliminar()
+    {
+        if ( VentasBLL.Existe(ventas.VentaId)) {
+
+            bool eliminado =  VentasBLL.Eliminar(ventas.VentaId);
+
+            if (eliminado) {
+                toast.ShowSuccess("Eliminado");
+                Nuevo();
+            } else
+                toast.ShowError("Error al eliminar");
+
+        } else {
+            toast.ShowWarning("Este venta no existe");
+        }
+    }
+
+    void AbrirDialogoClientes()
+    {
+        MostrarClientesDialogo = true;
+    }
+
+    void AbrirDialogoVehiculos()
+    {
+        MostrarVehiculosDialogo = true;
+    }
+
+    void SeleccionarCliente(Cliente _cliente)
+    {
+        cliente = _cliente;
+        ventas.ClienteId = cliente?.ClienteId ?? 0;
+        OcultarDialogo();
+    }
 
 }
