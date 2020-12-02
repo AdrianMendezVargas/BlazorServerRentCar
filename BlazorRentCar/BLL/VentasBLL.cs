@@ -10,7 +10,7 @@ using BlazorRentCar.ApplicationState;
 using System.Linq.Expressions;
 
 namespace BlazorRentCar.BLL {
-    public class VentasBLL {
+    public class VentasBLL {                
 
         private readonly Contexto _contexto;
         private readonly AppState _appState;
