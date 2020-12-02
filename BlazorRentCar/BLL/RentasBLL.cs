@@ -62,6 +62,7 @@ namespace BlazorRentCar.BLL {
 
                 _contexto.Entry(renta).State = EntityState.Modified;
                 paso = await _contexto.SaveChangesAsync() > 0;
+                _contexto.Entry(renta).State = EntityState.Detached;
 
                 if (paso) {
                     Vehiculo vehiculoRentado = await _vehiculosBLL.Buscar(renta.VehiculoId);
@@ -92,7 +93,7 @@ namespace BlazorRentCar.BLL {
         public async Task<bool> Eliminar(int id) {
             bool paso = false;
             try {
-                var renta = _contexto.Rentas.Find(id);
+                Renta renta = await _contexto.Rentas.Where(r => r.RentaId == id).FirstOrDefaultAsync();
 
                 if (renta != null) {
                     _contexto.Rentas.Remove(renta);
@@ -119,8 +120,8 @@ namespace BlazorRentCar.BLL {
 
             try {
                 renta = await _contexto.Rentas
+                    .AsNoTracking()
                     .Where(e => e.RentaId == id)
-                    //.AsNoTracking()
                     .FirstOrDefaultAsync();
             } catch (Exception) {
                 throw;
@@ -135,7 +136,7 @@ namespace BlazorRentCar.BLL {
             bool encontrado = false;
 
             try {
-                encontrado = await _contexto.Rentas.AnyAsync(e => e.RentaId == id);
+                encontrado = await _contexto.Rentas.AsNoTracking().AnyAsync(e => e.RentaId == id);
             } catch (Exception) {
                 throw;
             } finally {
@@ -145,9 +146,10 @@ namespace BlazorRentCar.BLL {
         }
 
         public async Task<List<Renta>> GetRentas(Expression<Func<Renta , bool>> expression , Paginacion paginacion) {
-            await Task.Delay(01); 
+            await Task.Delay(01);
 
-            var queryable = _contexto.Rentas.AsQueryable()
+            var queryable = _contexto.Rentas.AsNoTracking()
+                .AsQueryable()
                 .Where(expression)
                 .Where(v => v.UserName == _appState.ClaimsPrincipal.Identity.Name);
 

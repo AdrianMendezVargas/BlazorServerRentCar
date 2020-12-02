@@ -1,4 +1,5 @@
 ﻿@page "/registro-rentas"
+@page "/registro-rentas/{rentaId:int}"
 
 @attribute [Authorize]
 
@@ -63,7 +64,7 @@
                                 <input value="@vehiculo?.Modelo" readonly placeholder="Modelo" class="form-control" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@vehiculo?.AñoFabricacion" readonly placeholder="Año" class="form-control m-0" />
+                                <input value="@vehiculo?.AñoFabricacion.Year" readonly placeholder="Año" class="form-control m-0" />
                             </div>
                         </div>
                         <div class="form-group row">
@@ -77,7 +78,7 @@
                                 <input value="@vehiculo?.Pasajeros" readonly placeholder="Pasajeros" class="form-control m-0" />
                             </div>
                         </div>
-                        <ValidationMessage For="()=>renta.VehiculoId"/>
+                        <ValidationMessage For="()=>renta.VehiculoId" />
                     </div>
                 </div>
                 @*Vigencia de renta*@
@@ -91,12 +92,12 @@
                         <div class="form-group row mb-0">
                             <div class="col-sm mt-1">
                                 <label>Desde:</label>
-                                <InputDate class="form-control" placeholder="Desde" @bind-Value="renta.FechaInicial" @onchange="CalcularMonto" />
+                                <InputDate class="form-control" placeholder="Desde" @bind-Value="_FechaInicial" />
                                 <ValidationMessage For="()=>renta.FechaInicial" />
                             </div>
                             <div class="col-sm mt-1">
                                 <label>Hasta:</label>
-                                <InputDate class="form-control" placeholder="Hasta" @bind-Value="renta.FechaFinal" @onchange="CalcularMonto" />
+                                <InputDate class="form-control" placeholder="Hasta" @bind-Value="_FechaFinal" />
                                 <ValidationMessage For="()=>renta.FechaFinal" />
                             </div>
                         </div>
@@ -115,7 +116,7 @@
                 <input type="submit" form="form" class="btn btn-outline-success" value="Guardar" />
                 <button class="btn btn-outline-danger" @onclick="Eliminar">Eliminar</button>
             </div>
-            <VigenciaValidator/>
+            <VigenciaValidator />
             <DataAnnotationsValidator />
         </EditForm>
     </div>
@@ -130,16 +131,35 @@
 } else if (MostrarVehiculosDialogo) {
     <Dialogo Title="Seleccione el vehiculo" OnClose="OcultarDialogo">
         <Body>
-
+            <RegistroVehiculos ModoSeleccionVehiculo="true" OnVehiculoSelected="(Vehiculo v)=>SeleccionarVehiculo(v)" />
         </Body>
     </Dialogo>
 }
 
 @code {
-    Renta renta = new Renta("anonimo");
+
+    [Inject] public ClientesBLL ClientesBLL { get; set; }
+    [Inject] public VehiculoBLL VehiculosBLL { get; set; }
+
+    Renta renta = new Renta("");
 
     Vehiculo vehiculo;
     Cliente cliente;
+
+    public DateTime _FechaInicial {
+        get { return renta.FechaInicial; }
+        set {
+            renta.FechaInicial = value;
+            CalcularMonto();
+        }
+    }
+    public DateTime _FechaFinal {
+        get { return renta.FechaFinal; }
+        set {
+            renta.FechaFinal = value;
+            CalcularMonto();
+        }
+    }
 
     bool MostrarClientesDialogo;
     bool MostrarVehiculosDialogo;
@@ -148,16 +168,19 @@
 
     [Parameter] public int rentaId { get; set; }
 
-    protected override async Task OnParametersSetAsync() {
-        if (rentaId > 0) {
-            renta = await RentasBLL.Buscar(rentaId);
-        }
-    }
-
-    protected override void OnAfterRender(bool firstRender) {
+    protected override async Task OnAfterRenderAsync(bool firstRender) {
         base.OnAfterRender(firstRender);
         if (firstRender) {
-            Nuevo();
+            if (rentaId > 0) {
+                renta = await RentasBLL.Buscar(rentaId);
+                if (renta != null) {
+                    await SetRenta(renta);
+                } else {
+                    renta = new Renta(appState.ClaimsPrincipal.Identity.Name);
+                }
+            } else {
+                Nuevo();
+            }
             StateHasChanged();
         }
     }
@@ -168,6 +191,17 @@
         cliente = null;
     }
 
+    async Task SetRenta(Renta _renta) {
+        vehiculo = await VehiculosBLL.Buscar(_renta.VehiculoId);
+        renta.VehiculoId = vehiculo?.VehiculoId ?? 0;
+
+        cliente = await ClientesBLL.Buscar(_renta.ClienteId);
+        renta.ClienteId = cliente?.ClienteId ?? 0;
+
+        _FechaInicial = _renta.FechaInicial;
+        _FechaFinal = _renta.FechaFinal;
+    }
+
     void CalcularMonto() {
         renta.Monto = (renta.GetDiasRentados() * vehiculo?.PrecioDia ?? 0);
     }
@@ -175,6 +209,13 @@
     void SeleccionarCliente(Cliente _cliente) {
         cliente = _cliente;
         renta.ClienteId = cliente?.ClienteId ?? 0;
+        OcultarDialogo();
+    }
+
+    void SeleccionarVehiculo(Vehiculo _vehiculo) {
+        vehiculo = _vehiculo;
+        renta.VehiculoId = vehiculo?.VehiculoId ?? 0;
+        CalcularMonto();
         OcultarDialogo();
     }
 
@@ -222,10 +263,10 @@
 
     async Task Buscar() {
 
-        var rentaBuscado = await RentasBLL.Buscar(renta.RentaId);
+        var rentaBuscada = await RentasBLL.Buscar(renta.RentaId);
 
-        if (rentaBuscado != null) {
-            renta = rentaBuscado;
+        if (rentaBuscada != null) {
+            await SetRenta(rentaBuscada);
         } else {
             toast.ShowWarning("No encontrado");
             Nuevo();
