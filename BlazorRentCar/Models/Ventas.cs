@@ -42,6 +42,11 @@ namespace BlazorRentCar.Models
             return balance;
         }
 
+        public Ventas(string userName)
+        {
+            UserName = userName;
+        }
+
 
     }
 }
