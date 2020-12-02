@@ -210,9 +210,9 @@ else if (MostrarVehiculosDialogo)
         }
     }
 
-    async Task Guardar()
+   void Guardar()
     {
-        bool guardo = await VentasBLL.Guardar(ventas);
+        bool guardo =  VentasBLL.Guardar(ventas);
         if (guardo)
         {
             toast.ShowSuccess("Guardado");
@@ -239,11 +239,11 @@ else if (MostrarVehiculosDialogo)
         }
 
     }
-    async Task Eliminar()
+    void  Eliminar()
     {
-        if (await VentasBLL.Existe(ventas.VentaId)) {
+        if ( VentasBLL.Existe(ventas.VentaId)) {
 
-            bool eliminado = await VentasBLL.Eliminar(ventas.VentaId);
+            bool eliminado =  VentasBLL.Eliminar(ventas.VentaId);
 
             if (eliminado) {
                 toast.ShowSuccess("Eliminado");
