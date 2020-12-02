@@ -42,7 +42,9 @@
                                 <input value="@cliente?.Email" readonly placeholder="Email" class="form-control m-0" />
                             </div>
                         </div>
-                        <ValidationMessage For="()=>renta.ClienteId" />
+                        @if (cliente == null) {
+                            <p class="text-red">Seleccione un cliente</p>
+                        }
                     </div>
                 </div>
                 @*Datos del vehiculo*@
@@ -78,7 +80,9 @@
                                 <input value="@vehiculo?.Pasajeros" readonly placeholder="Pasajeros" class="form-control m-0" />
                             </div>
                         </div>
-                        <ValidationMessage For="()=>renta.VehiculoId" />
+                        @if (vehiculo == null) {
+                            <p class="text-red">Seleccione un vehiculo</p>
+                        }
                     </div>
                 </div>
                 @*Vigencia de renta*@

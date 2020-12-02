@@ -51,22 +51,24 @@
                                 <th>Nombre</th>
                                 <th>Apellido</th>
                                 <th>Email</th>
+                                <th>Balance</th>
                                 <th></th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach (var cliente in Clientes) {
-                                <tr>
-                                    <td>@cliente.ClienteId</td>
-                                    <td>@cliente.Nombres</td>
-                                    <td>@cliente.Apellidos</td>
-                                    <td>@cliente.Email</td>
-                                    @if (!ModoSeleccionCliente) {
-                                        <td><button @onclick="()=>ModificarCliente(cliente)" class="btn btn-outline-dark">Ver</button></td>
-                                    } else {
-                                        <td><button @onclick="()=> RetornarCliente(cliente)" class="btn btn-outline-dark">Seleccionar</button></td>
-                                    }
-                                </tr>
+                            <tr>
+                                <td>@cliente.ClienteId</td>
+                                <td>@cliente.Nombres</td>
+                                <td>@cliente.Apellidos</td>
+                                <td>@cliente.Email</td>
+                                <td>@cliente.Balance</td>
+                                @if (!ModoSeleccionCliente) {
+                                    <td><button @onclick="()=>ModificarCliente(cliente)" class="btn btn-outline-dark">Ver</button></td>
+                                } else {
+                                    <td><button @onclick="()=> RetornarCliente(cliente)" class="btn btn-outline-dark">Seleccionar</button></td>
+                                }
+                            </tr>
                             }
                         </tbody>
                         <tfoot>

@@ -1,0 +1,47 @@
+﻿
+<div class="mt-3">
+    <label>Observaciones</label><br />
+    <textarea class="form-control mr-3" readonly value="@cobro.Observaciones" />
+</div>
+<div class="container">
+    <div class="card w-100 shadow-sm">
+        <div class="card-header bg-dark text-white">
+            <div class="form-row">
+                <div class="col-sm">
+                    <h4>Detalle</h4>
+                </div>
+            </div>
+        </div>
+        <div class="card-body table-responsive" style="max-height:90%">
+            <table class="table table-hover table-sm w-100">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var cobroDetalle in cobro.Detalles) {
+                        <tr>
+                            <td>@cobroDetalle.CobroDetalleId</td>
+                            <td>@cobroDetalle.Monto.ToString("C")</td>
+                        </tr>
+                    }
+                </tbody>
+                @if (cobro.Detalles.Count > 1) {
+                    <tfoot class="bg-dark text-light btn">
+                        <tr>
+                            <td>Total:</td>
+                            <td>@cobro.Monto.ToString("C")</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Cobro cobro { get; set; }
+}

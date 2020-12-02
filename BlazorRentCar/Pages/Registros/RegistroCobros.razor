@@ -13,11 +13,7 @@
             </div>
             <div class="card-body">
                 <div class="form-group row">
-                    <label class="col col-form-label">Cobro id:</label>
-                    <div class="col-sm-10 form-inline">
-                        <InputNumber @bind-Value="cobro.CobroId" class="form-control" />
-                        <button type="button" class="btn btn-outline-primary ml-3" @onclick="Buscar">Buscar<i class="oi oi-magnifying-glass ml-2"></i></button>
-                    </div>
+                    <a class="btn btn-outline-info ml-3" href="consulta-cobros"><i class="oi oi-list-rich mr-2"></i>Ver cobros</a>
                 </div>
                 @*Datos del cliente*@
                 <div class="elevation-1">
@@ -126,7 +122,6 @@
             <div class="card-footer text-center">
                 <button type="button" class="btn btn-outline-dark" @onclick="Nuevo">Nuevo</button>
                 <input type="submit" form="form" class="btn btn-outline-success" value="Guardar" />
-                <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar</button>
             </div>
             <DataAnnotationsValidator />
         </EditForm>
@@ -170,11 +165,14 @@
     void SeleccionarCliente(Cliente _cliente) {
         cliente = _cliente;
         venta = null;
+        CuotasAPagar = new List<Cuota>();
         OcultarDialogo();
     }
 
-    void SeleccionarVenta(Ventas _venta) {
-        venta = _venta;
+    async Task SeleccionarVenta(Ventas _venta) {
+        CuotasAPagar = new List<Cuota>();
+        venta = await VentasBLL.Buscar(_venta.VentaId);
+        cobro.VentaId = venta?.VentaId ?? 0;
         OcultarDialogo();
     }
 
@@ -231,24 +229,7 @@
         cobro = new Cobro();
         venta = null;
         cliente = null;
-    }
-
-    async Task Eliminar() {
-
-        if (await CobrosBLL.Existe(cobro.CobroId)) {
-
-            bool eliminado = await CobrosBLL.Eliminar(cobro.CobroId);
-
-            if (eliminado) {
-                toast.ShowSuccess("Eliminado");
-                Nuevo();
-            } else
-                toast.ShowError("Error al eliminar");
-
-        } else {
-            toast.ShowWarning("Este cobro no existe");
-        }
-
+        CuotasAPagar = new List<Cuota>();
     }
 
     async Task Buscar() {

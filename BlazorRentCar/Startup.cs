@@ -52,6 +52,7 @@ namespace BlazorRentCar {
             services.AddTransient<VehiculoBLL>();
             services.AddTransient<VentasBLL>();
             services.AddTransient<RentasBLL>();
+            services.AddTransient<CuotasBLL>();
             services.AddTransient<CobrosBLL>();
         }
 

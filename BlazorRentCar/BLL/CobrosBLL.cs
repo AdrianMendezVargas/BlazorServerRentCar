@@ -15,11 +15,13 @@ namespace BlazorRentCar.BLL {
         private readonly Contexto _contexto;
         private readonly AppState _appState;
         private readonly VentasBLL _ventasBLL;
+        private readonly CuotasBLL _cuotasBLL;
 
-        public CobrosBLL(Contexto contexto , AppState appState, VentasBLL ventasBLL) {
+        public CobrosBLL(Contexto contexto , AppState appState , VentasBLL ventasBLL , CuotasBLL cuotasBLL) {
             _contexto = contexto;
             _appState = appState;
             _ventasBLL = ventasBLL;
+            _cuotasBLL = cuotasBLL;
         }
 
         public async Task<bool> Guardar(Cobro cobro) {
@@ -39,12 +41,32 @@ namespace BlazorRentCar.BLL {
                 Ventas venta = await _ventasBLL.Buscar(cobro.VentaId);
                 if (venta != null) {
                     foreach (var cobroDetalle in cobro.Detalles) {
-                        venta.AgregarPago(cobroDetalle.Monto);
+                        await AgregarPago(cobroDetalle.Monto , venta);
                     }
                     await _ventasBLL.Modificar(venta);
                 }
             }
             return paso;
+        }
+
+        private async Task AgregarPago(decimal montoPago , Ventas venta) {
+
+            venta.Cuotas = venta.Cuotas.OrderBy(c => c.Balance).ToList();
+            foreach (var cuota in venta.Cuotas.Where(c => c.Pendiente)) {
+                if (montoPago > cuota.Balance) {
+                    venta.Balance -= cuota.Balance;
+                    montoPago -= cuota.Balance;
+                    cuota.Balance = 0;
+                    await _cuotasBLL.Modificar(cuota);
+                } else {
+                    venta.Balance -= montoPago;
+                    cuota.Balance -= montoPago;
+                    montoPago = 0;
+                    await _cuotasBLL.Modificar(cuota);
+                    break;
+                }
+                
+            }
         }
 
         public async Task<bool> Eliminar(int id) {
@@ -61,15 +83,17 @@ namespace BlazorRentCar.BLL {
                         Ventas venta = await _ventasBLL.Buscar(cobro.VentaId);
                         if (venta != null) {
                             decimal montoPago = cobro.Monto;
-                            foreach (var cuota in venta.Cuotas.OrderBy(c=>c.Balance)) {
+                            foreach (var cuota in venta.Cuotas.OrderBy(c => c.Balance)) {
                                 if (montoPago > cuota.Monto) {
                                     venta.Balance += cuota.Monto;
                                     montoPago -= cuota.Monto;
                                     cuota.Balance = cuota.Monto;
+                                    await _cuotasBLL.Modificar(cuota);
                                 } else {
                                     cuota.Balance += montoPago;
                                     venta.Balance += montoPago;
                                     montoPago = 0;
+                                    await _cuotasBLL.Modificar(cuota);
                                     break;
                                 }
                             }
@@ -116,7 +140,7 @@ namespace BlazorRentCar.BLL {
             return encontrado;
         }
 
-        public async Task<List<Cobro>> GetClientes(Expression<Func<Cobro , bool>> expression , Paginacion paginacion) {
+        public async Task<List<Cobro>> GetCobros(Expression<Func<Cobro , bool>> expression , Paginacion paginacion) {
             await Task.Delay(01);
 
             var queryable = _contexto.Cobros

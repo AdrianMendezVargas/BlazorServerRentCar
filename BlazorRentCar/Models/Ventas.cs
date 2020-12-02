@@ -27,7 +27,7 @@ namespace BlazorRentCar.Models
        
 
         [ForeignKey("VentaId")]
-        public virtual List<Cuota> Cuotas { get; private set; } = new List<Cuota>();
+        public virtual List<Cuota> Cuotas { get; set; } = new List<Cuota>();
 
         public void AgregarCuota(Cuota cuota) {
             Cuotas.Add(cuota);
@@ -42,21 +42,6 @@ namespace BlazorRentCar.Models
             return balance;
         }
 
-        public void AgregarPago(decimal montoPago) {
-            Cuotas = Cuotas.OrderBy(c => c.Balance).ToList();
-            foreach (var cuota in Cuotas.Where(c => c.Pendiente)) {
-                if (montoPago > cuota.Balance) {
-                    Balance -= cuota.Balance;
-                    montoPago -= cuota.Balance;
-                    cuota.Balance = 0;
-                } else {
-                    Balance -= montoPago;
-                    cuota.Balance -= montoPago;
-                    montoPago = 0;
-                    break;
-                }
-            }
-        }
 
         public Ventas(string userName) {
             UserName = userName;

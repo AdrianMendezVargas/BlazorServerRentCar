@@ -121,7 +121,8 @@ namespace BlazorRentCar.BLL {
             Renta renta;
 
             try {
-                renta = await _contexto.Rentas.FindAsync(id);
+                renta = await _contexto.Rentas.AsNoTracking().Where(r => r.RentaId == id).FirstOrDefaultAsync();
+                _contexto.Entry(renta).State = EntityState.Detached;
             } catch (Exception) {
                 throw;
             } finally {
