@@ -41,7 +41,7 @@ namespace BlazorRentCar.BLL {
                     foreach (var cobroDetalle in cobro.Detalles) {
                         venta.AgregarPago(cobroDetalle.Monto);
                     }
-                    _ventasBLL.Modificar(venta);
+                    await _ventasBLL.Modificar(venta);
                 }
             }
             return paso;
@@ -73,7 +73,7 @@ namespace BlazorRentCar.BLL {
                                     break;
                                 }
                             }
-                            _ventasBLL.Modificar(venta);
+                            await _ventasBLL.Modificar(venta);
                         }
                     }
                 }
@@ -119,14 +119,22 @@ namespace BlazorRentCar.BLL {
         public async Task<List<Cobro>> GetClientes(Expression<Func<Cobro , bool>> expression , Paginacion paginacion) {
             await Task.Delay(01);
 
-            var queryable = _contexto.Cobros.AsNoTracking().AsQueryable().Where(expression).Where(c => c.UserName == _appState.ClaimsPrincipal.Identity.Name);
+            var queryable = _contexto.Cobros
+                .AsNoTracking()
+                .AsQueryable()
+                .Where(expression)
+                .Where(c => c.UserName == _appState.ClaimsPrincipal.Identity.Name);
+
             var lista = await queryable.Paginar(paginacion).ToListAsync();
             return lista;
 
         }
 
         public async Task<int> Contar(Expression<Func<Cobro , bool>> expression) {
-            return await _contexto.Cobros.AsQueryable().Where(expression).Where(c => c.UserName == _appState.ClaimsPrincipal.Identity.Name).CountAsync();
+            return await _contexto.Cobros.AsQueryable()
+                .Where(expression)
+                .Where(c => c.UserName == _appState.ClaimsPrincipal.Identity.Name)
+                .CountAsync();
         }
     }
 }

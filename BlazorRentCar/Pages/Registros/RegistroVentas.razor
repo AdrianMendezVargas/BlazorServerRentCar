@@ -119,7 +119,7 @@
                 <table class="table">
                     <thead class="thead-dark">
                         <tr>
-                            <th scope="col"> #Cuotas</th>
+                            <th scope="col"> cuotaId</th>
                             <th scope="col"> Monto</th>
                             <th scope="col"> Balance</th>
                             <th scope="col"> Pagada</th>
@@ -130,11 +130,9 @@
                         {
                             <tr>
                                 <td>@auxiliar.CuotaId</td>
-                                <td>@auxiliar.VentaId</td>
                                 <td>@auxiliar.Monto</td>
                                 <td>@auxiliar.Balance</td>
-                                <td>@auxiliar.EstaPagada</td>
-                                <td></td>
+                                <td>@(!auxiliar.Pendiente)</td>
                             </tr>
                         }
 
@@ -167,7 +165,7 @@ else if (MostrarVehiculosDialogo)
 {
     <Dialogo Title="Seleccione el vehiculo" OnClose="OcultarDialogo">
         <Body>
-
+            
         </Body>
     </Dialogo>
 }
@@ -212,9 +210,9 @@ else if (MostrarVehiculosDialogo)
         }
     }
 
-    void Guardar()
+    async Task Guardar()
     {
-        bool guardo = VentasBLL.Guardar(ventas);
+        bool guardo = await VentasBLL.Guardar(ventas);
         if (guardo)
         {
             toast.ShowSuccess("Guardado");
@@ -226,9 +224,9 @@ else if (MostrarVehiculosDialogo)
     }
 
 
-    void Buscar()
+    async Task Buscar()
     {
-        var ventaBuscado =  VentasBLL.Buscar(ventas.VentaId);
+        var ventaBuscado = await VentasBLL.Buscar(ventas.VentaId);
 
         if (ventaBuscado != null)
         {
@@ -241,11 +239,11 @@ else if (MostrarVehiculosDialogo)
         }
 
     }
-    void Eliminar()
+    async Task Eliminar()
     {
-        if ( VentasBLL.Existe(ventas.VentaId)) {
+        if (await VentasBLL.Existe(ventas.VentaId)) {
 
-            bool eliminado =  VentasBLL.Eliminar(ventas.VentaId);
+            bool eliminado = await VentasBLL.Eliminar(ventas.VentaId);
 
             if (eliminado) {
                 toast.ShowSuccess("Eliminado");

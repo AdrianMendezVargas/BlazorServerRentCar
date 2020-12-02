@@ -7,16 +7,20 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using BlazorRentCar.Utilidades;
+using BlazorRentCar.ApplicationState;
 
 namespace BlazorRentCar.BLL
 {
     public class VehiculoBLL
     {
         private readonly Contexto _contexto;
+        private readonly AppState _appState;
 
-        public VehiculoBLL(Contexto contexto)
+
+        public VehiculoBLL(Contexto contexto, AppState appState)
         {
             _contexto = contexto;
+            _appState = appState;
         }
 
         public async Task<bool> Guardar(Vehiculo vehiculo)
@@ -117,7 +121,7 @@ namespace BlazorRentCar.BLL
         {
             await Task.Delay(01); 
 
-            var queryable = _contexto.Vehiculos.Where(expression).AsQueryable();
+            var queryable = _contexto.Vehiculos.Where(expression).Where(c => c.UserName == _appState.ClaimsPrincipal.Identity.Name).AsQueryable();
             var lista = await queryable.Paginar(paginacion).ToListAsync();
             return lista;
 
@@ -125,7 +129,7 @@ namespace BlazorRentCar.BLL
 
         public async Task<int> Contar(Expression<Func<Vehiculo, bool>> expression)
         {
-            return await _contexto.Vehiculos.AsQueryable().Where(expression).CountAsync();
+            return await _contexto.Vehiculos.AsQueryable().Where(expression).Where(c => c.UserName == _appState.ClaimsPrincipal.Identity.Name).CountAsync();
         }
 
         public async Task<Vehiculo> Buscar(int id)
