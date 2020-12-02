@@ -124,9 +124,9 @@
                 </div>
             </div>
             <div class="card-footer text-center">
-                <button class="btn btn-outline-dark" @onclick="Nuevo">Nuevo</button>
+                <button type="button" class="btn btn-outline-dark" @onclick="Nuevo">Nuevo</button>
                 <input type="submit" form="form" class="btn btn-outline-success" value="Guardar" />
-                <button class="btn btn-outline-danger" @onclick="Eliminar">Eliminar</button>
+                <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar</button>
             </div>
             <DataAnnotationsValidator />
         </EditForm>
@@ -150,15 +150,17 @@
     [Inject] public ClientesBLL ClientesBLL { get; set; }
     [Inject] public VentasBLL VentasBLL { get; set; }
 
-    Cobro cobro = new Cobro("");
+    Cobro cobro = new Cobro();
     Cliente cliente;
 
 
     Ventas venta;
 
-    protected override void OnInitialized() {
+    protected async override Task OnInitializedAsync() {
+        cobro = new Cobro();
+
         //TODO: quitar asignacion
-        venta = new Ventas("") {
+        venta = new Ventas("styles") {
             VentaId = 1 ,
             ClienteId = 1 ,
             Comentarios = "comment" ,
@@ -217,7 +219,7 @@
     }
 
     async Task SetCobro(Cobro _cobro) {
-        venta = VentasBLL.Buscar(_cobro.VentaId);
+        venta = await VentasBLL.Buscar(_cobro.VentaId);
         cobro.VentaId = venta?.VehiculoId ?? 0;
 
         cliente = await ClientesBLL.Buscar(venta.ClienteId);
@@ -232,7 +234,7 @@
     }
 
     void Nuevo() {
-        cobro = new Cobro(appState.ClaimsPrincipal.Identity.Name);
+        cobro = new Cobro();
         venta = null;
         cliente = null;
     }
@@ -271,7 +273,7 @@
         if (CuotasAPagar.Count > 0) {
             cobro.VentaId = venta.VentaId;
             bool guardo = await CobrosBLL.Guardar(cobro);
-
+            Nuevo();
             if (guardo) {
                 toast.ShowSuccess("Guardado ");
 

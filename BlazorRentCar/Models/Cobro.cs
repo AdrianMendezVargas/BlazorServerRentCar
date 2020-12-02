@@ -32,9 +32,5 @@ namespace BlazorRentCar.Models {
             CalcularMonto();
             return Monto;
         }
-
-        public Cobro(string userName) {
-            UserName = userName;
-        }
     }
 }

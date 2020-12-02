@@ -33,6 +33,8 @@ namespace BlazorRentCar.BLL {
         }
 
         private async Task<bool> Insertar(Renta renta) {
+            renta.RentaId = 0;
+            renta.UserName = _appState.ClaimsPrincipal.Identity.Name;
             bool paso = false;
 
             try {
@@ -93,7 +95,7 @@ namespace BlazorRentCar.BLL {
         public async Task<bool> Eliminar(int id) {
             bool paso = false;
             try {
-                Renta renta = await _contexto.Rentas.Where(r => r.RentaId == id).FirstOrDefaultAsync();
+                Renta renta = await Buscar(id);
 
                 if (renta != null) {
                     _contexto.Rentas.Remove(renta);
@@ -119,10 +121,7 @@ namespace BlazorRentCar.BLL {
             Renta renta;
 
             try {
-                renta = await _contexto.Rentas
-                    .AsNoTracking()
-                    .Where(e => e.RentaId == id)
-                    .FirstOrDefaultAsync();
+                renta = await _contexto.Rentas.FindAsync(id);
             } catch (Exception) {
                 throw;
             } finally {

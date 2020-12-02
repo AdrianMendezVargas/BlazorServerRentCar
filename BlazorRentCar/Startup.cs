@@ -33,7 +33,8 @@ namespace BlazorRentCar {
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<Contexto>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
+
             services.AddDefaultIdentity<Usuarios>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole<string>>()
                 .AddEntityFrameworkStores<Contexto>();

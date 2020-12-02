@@ -9,7 +9,6 @@ namespace BlazorRentCar.Models {
         [Key]
         public int RentaId { get; set; }
 
-        [Required]
         public string UserName { get; set; }
 
         [Required]
@@ -38,10 +37,6 @@ namespace BlazorRentCar.Models {
         public virtual int GetDiasRentados(){
             var timeSpam = FechaFinal.Date - FechaInicial.Date;
             return timeSpam.Days > 0 ? timeSpam.Days : 0;
-        }
-
-        public Renta(string userName) {
-            UserName = userName;
         }
 
     }

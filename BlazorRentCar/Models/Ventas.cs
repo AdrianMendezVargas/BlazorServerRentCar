@@ -19,7 +19,7 @@ namespace BlazorRentCar.Models
         [Required(ErrorMessage = "Es obligatorio asignarle la venta a un vehículo")]
         public int VehiculoId { get; set; }
 
-        public decimal Monto { get; private set; }
+        public decimal Monto { get;  set; }
         public decimal Balance { get; set; }
 
         public DateTime Fecha { get; set; } = DateTime.Today;
@@ -46,9 +46,11 @@ namespace BlazorRentCar.Models
             Cuotas = Cuotas.OrderBy(c => c.Balance).ToList();
             foreach (var cuota in Cuotas.Where(c => c.Pendiente)) {
                 if (montoPago > cuota.Balance) {
+                    Balance -= cuota.Balance;
                     montoPago -= cuota.Balance;
                     cuota.Balance = 0;
                 } else {
+                    Balance -= montoPago;
                     cuota.Balance -= montoPago;
                     montoPago = 0;
                     break;

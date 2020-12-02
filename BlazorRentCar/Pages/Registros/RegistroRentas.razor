@@ -112,9 +112,9 @@
                 </div>
             </div>
             <div class="card-footer text-center">
-                <button class="btn btn-outline-dark" @onclick="Nuevo">Nuevo</button>
+                <button type="button" class="btn btn-outline-dark" @onclick="Nuevo">Nuevo</button>
                 <input type="submit" form="form" class="btn btn-outline-success" value="Guardar" />
-                <button class="btn btn-outline-danger" @onclick="Eliminar">Eliminar</button>
+                <button type="button" class="btn btn-outline-danger" @onclick="Eliminar">Eliminar</button>
             </div>
             <VigenciaValidator />
             <DataAnnotationsValidator />
@@ -138,10 +138,11 @@
 
 @code {
 
+    [Inject] public RentasBLL RentasBLL { get; set; }
     [Inject] public ClientesBLL ClientesBLL { get; set; }
     [Inject] public VehiculoBLL VehiculosBLL { get; set; }
 
-    Renta renta = new Renta("");
+    Renta renta = new Renta();
 
     Vehiculo vehiculo;
     Cliente cliente;
@@ -164,29 +165,25 @@
     bool MostrarClientesDialogo;
     bool MostrarVehiculosDialogo;
 
-    [Inject] public RentasBLL RentasBLL { get; set; }
 
     [Parameter] public int rentaId { get; set; }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender) {
-        base.OnAfterRender(firstRender);
-        if (firstRender) {
-            if (rentaId > 0) {
-                renta = await RentasBLL.Buscar(rentaId);
-                if (renta != null) {
-                    await SetRenta(renta);
-                } else {
-                    renta = new Renta(appState.ClaimsPrincipal.Identity.Name);
-                }
+    protected override async Task OnParametersSetAsync() {
+
+        if (rentaId > 0) {
+            renta = await RentasBLL.Buscar(rentaId);
+            if (renta != null) {
+                await SetRenta(renta);
             } else {
-                Nuevo();
+                renta = new Renta();
             }
-            StateHasChanged();
+        } else {
+            Nuevo();
         }
     }
 
     void Nuevo() {
-        renta = new Renta(appState.ClaimsPrincipal.Identity.Name);
+        renta = new Renta();
         vehiculo = null;
         cliente = null;
     }
@@ -245,7 +242,7 @@
 
     async Task Eliminar() {
 
-        if (await RentasBLL.Existe(renta.RentaId)) {
+     
 
             bool eliminado = await RentasBLL.Eliminar(renta.RentaId);
 
@@ -255,9 +252,7 @@
             } else
                 toast.ShowError("Error al eliminar");
 
-        } else {
-            toast.ShowWarning("Este renta no existe");
-        }
+     
 
     }
 

@@ -16,9 +16,10 @@ namespace BlazorRentCar.BLL {
         private readonly AppState _appState;
         private readonly VentasBLL _ventasBLL;
 
-        public CobrosBLL(Contexto contexto , AppState appState) {
+        public CobrosBLL(Contexto contexto , AppState appState, VentasBLL ventasBLL) {
             _contexto = contexto;
             _appState = appState;
+            _ventasBLL = ventasBLL;
         }
 
         public async Task<bool> Guardar(Cobro cobro) {
@@ -27,18 +28,20 @@ namespace BlazorRentCar.BLL {
 
         public async Task<bool> Insertar(Cobro cobro) {
             bool paso = false;
+            cobro.UserName = _appState.ClaimsPrincipal.Identity.Name;
             cobro.CobroId = 0;
 
             _contexto.Cobros.Add(cobro);
             paso = await _contexto.SaveChangesAsync() > 0;
+            _contexto.Entry(cobro).State = EntityState.Detached;
 
             if (paso) {
-                Ventas venta = _ventasBLL.Buscar(cobro.VentaId);
+                Ventas venta = await _ventasBLL.Buscar(cobro.VentaId);
                 if (venta != null) {
                     foreach (var cobroDetalle in cobro.Detalles) {
                         venta.AgregarPago(cobroDetalle.Monto);
-                        _ventasBLL.Modificar(venta);
                     }
+                    _ventasBLL.Modificar(venta);
                 }
             }
             return paso;
@@ -52,17 +55,20 @@ namespace BlazorRentCar.BLL {
                 if (cobro != null) {
                     _contexto.Cobros.Remove(cobro);
                     paso = await _contexto.SaveChangesAsync() > 0;
+                    _contexto.Entry(cobro).State = EntityState.Detached;
 
                     if (paso) {
-                        Ventas venta = _ventasBLL.Buscar(cobro.VentaId);
+                        Ventas venta = await _ventasBLL.Buscar(cobro.VentaId);
                         if (venta != null) {
                             decimal montoPago = cobro.Monto;
                             foreach (var cuota in venta.Cuotas.OrderBy(c=>c.Balance)) {
                                 if (montoPago > cuota.Monto) {
+                                    venta.Balance += cuota.Monto;
                                     montoPago -= cuota.Monto;
                                     cuota.Balance = cuota.Monto;
                                 } else {
                                     cuota.Balance += montoPago;
+                                    venta.Balance += montoPago;
                                     montoPago = 0;
                                     break;
                                 }

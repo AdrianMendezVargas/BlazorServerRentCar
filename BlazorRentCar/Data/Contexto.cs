@@ -18,5 +18,25 @@ namespace BlazorRentCar.Data {
             : base(options) {
         }
 
+        protected override void OnModelCreating(ModelBuilder builder) {
+            base.OnModelCreating(builder);
+            Ventas venta = new Ventas("styles") {
+                VentaId = 1 ,
+                ClienteId = 1 ,
+                Comentarios = "comment" ,
+                VehiculoId = 1,
+                Monto = 10000,
+                Balance = 10000
+            };
+
+            builder.Entity<Ventas>().HasData(venta);
+
+            for (int i = 0 ; i < 10 ; i++) {
+                builder.Entity<Cuota>().HasData(new Cuota(1000) { VentaId = venta.VentaId , CuotaId = i + 1 });
+            }
+
+
+        }
+
     }
 }
