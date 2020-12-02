@@ -3,11 +3,11 @@
 @inject IToastService toast
 @attribute [Authorize]
 
-    <div class="container mt-3">
-        <div class="card shadow-lg w-100">
-            <div class="card-header bg-dark">
-                <div class="form-row">
-
+<div class="container mt-3">
+    <div class="card shadow-lg w-100">
+        <div class="card-header bg-dark">
+            <div class="form-row">
+                @if (!ModoSeleccionVenta) {
                     <div class="col-sm">
                         <h3 class="text-light"><i class="fa fa-money-check mr-3" />Ventas</h3>
 
@@ -18,81 +18,90 @@
                             Agregar
                         </a>
                     </div>
-                    <div class="col-sm">
-                        <input class="form-control w-100" type="@(indexSelect == 1 ? "number" : "text")" @bind="criterioDeBusqueda" />
-                    </div>
-                    <div class="col-sm text-center">
-                        <button class="btn btn-dark border-light" @onclick="FiltarVentas">
-                            <i class="oi oi-magnifying-glass" />
-                            Buscar
-                        </button>
-
-                    </div>
-
+                }
+                <div class="col-sm">
+                    <input class="form-control w-100" type="@(indexSelect == 1 ? "number" : "text")" @bind="criterioDeBusqueda" />
+                </div>
+                <div class="col-sm text-center">
+                    <button class="btn btn-dark border-light" @onclick="FiltarVentas">
+                        <i class="oi oi-magnifying-glass" />
+                        Buscar
+                    </button>
 
                 </div>
-
-            </div>
-            <div class="card-body table-responsive">
-                @if (Ventas == null)
-                {
-                    <div>
-                        <h4>Cargando...</h4>
-                    </div>
-                }
-                else
-                {
-            <table class="table table-hover text-nowrap">
-                <thead class="thead-light">
-                    <tr>
-                        <th>Venta Id</th>
-                        <th>Cliente Id</th>
-                        <th>Vehiculo Id</th>
-                        <th>Monto</th>
-                        <th>Balance</th>
-                        <th> Fecha </th>
-                        <th> Comentarios</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var ventas in Ventas)
-                    {
-                        <tr>
-                            <td>@ventas.VentaId</td>
-                            <td>@ventas.ClienteId</td>
-                            <td>@ventas.VehiculoId</td>
-                            <td>@ventas.Monto</td>
-                            <td>@ventas.Balance</td>
-                            <td>@ventas.Fecha</td>
-                            <td>@ventas.Comentarios</td>
-                            <td><a class="btn btn-outline-dark" href="registro-rentas/@ventas.VentaId">Ver</a></td>
-                        </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <th colspan="7">
-                            <Paginas CambioPaginacion="CambioPaginacion"
-                                     PaginasTotales="PaginasTotales"
-                                     Paginacion="PaginacionActual"
-                                     Radio="2" />
-                        </th>
-                    </tr>
-                </tfoot>
-            </table>
-                    }
 
 
             </div>
 
         </div>
+        <div class="card-body table-responsive">
+            @if (Ventas == null) {
+                <div>
+                    <h4>Cargando...</h4>
+                </div>
+            } else {
+                <table class="table table-hover text-nowrap">
+                    <thead class="thead-light">
+                        <tr>
+                            <th>Venta Id</th>
+                            <th>Cliente Id</th>
+                            <th>Vehiculo Id</th>
+                            <th>Monto</th>
+                            <th>Balance</th>
+                            <th> Fecha </th>
+                            @if (!ModoSeleccionVenta) {
+                                <th> Comentarios</th>
+                            }
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var ventas in Ventas) {
+                            <tr>
+                                <td>@ventas.VentaId</td>
+                                <td>@ventas.ClienteId</td>
+                                <td>@ventas.VehiculoId</td>
+                                <td>@ventas.Monto</td>
+                                <td>@ventas.Balance</td>
+                                <td>@ventas.Fecha</td>
+                                @if (!ModoSeleccionVenta) {
+                                    <td>@ventas.Comentarios</td>
+                                }
+                                @if (!ModoSeleccionVenta) {
+                                    <td><a class="btn btn-outline-dark" href="registro-ventas/@ventas.VentaId">Ver</a></td>
+                                } else {
+                                    <td><button @onclick="()=> RetornarVenta(ventas)" class="btn btn-outline-dark">Seleccionar</button></td>
+                                }
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="7">
+                                <Paginas CambioPaginacion="CambioPaginacion"
+                                         PaginasTotales="PaginasTotales"
+                                         Paginacion="PaginacionActual"
+                                         Radio="2" />
+                            </th>
+                        </tr>
+                    </tfoot>
+                </table>
+            }
+
+
+        </div>
 
     </div>
+
+</div>
 
 @code {
     [Inject]
     public VentasBLL VentasBLL { get; set; }
+
+    [Parameter] public int ClienteId { get; set; } = 0;
+    [Parameter] public bool ModoSeleccionVenta { get; set; }
+    [Parameter] public EventCallback<Ventas> OnVentaSelected { get; set; }
 
     bool MostraDialogoEditor = false;
     bool EsNuevoVenta = false;
@@ -100,7 +109,7 @@
 
     Paginacion PaginacionActual = new Paginacion();
     int VentasTotalesFiltradas;
-    Expression<Func<Ventas, bool>> expressionFiltrado = c => true;
+    Expression<Func<Ventas , bool>> expressionFiltrado = c => true;
     int PaginasTotales;
 
     int indexSelect = 0; //indice actual del select
@@ -109,67 +118,60 @@
     public List<Ventas> Ventas { get; set; }
 
 
-    protected async override Task OnInitializedAsync()
-    {
+    protected async override Task OnInitializedAsync() {
         await RefrescarTabla();
     }
 
-    async Task RefrescarTabla()
-    {
-        Ventas = await VentasBLL.GetVentas(expressionFiltrado, PaginacionActual);
-        VentasTotalesFiltradas = await VentasBLL.Contar(expressionFiltrado);
+    protected override Task OnParametersSetAsync() {
+        return base.OnParametersSetAsync();
+    }
+
+    async Task RefrescarTabla() {
+        Ventas = await VentasBLL.GetVentas(expressionFiltrado , PaginacionActual, ClienteId > 0 ? ClienteId : 0);
+        VentasTotalesFiltradas = await VentasBLL.Contar(expressionFiltrado, ClienteId > 0 ? ClienteId : 0);
         GetPaginasTotales();
     }
 
-    async Task CambioPaginacion()
-    {
+    void RetornarVenta(Ventas venta) {
+        OnVentaSelected.InvokeAsync(venta);
+    }
+
+    async Task CambioPaginacion() {
         await RefrescarTabla();
     }
 
-    void GetPaginasTotales()
-    {
-        int paginasTotalesTemp = (int)Math.Ceiling((double)VentasTotalesFiltradas / PaginacionActual.CantidadPorPagina);
+    void GetPaginasTotales() {
+        int paginasTotalesTemp = (int) Math.Ceiling((double) VentasTotalesFiltradas / PaginacionActual.CantidadPorPagina);
         PaginasTotales = paginasTotalesTemp < 1 ? 1 : paginasTotalesTemp;
     }
 
-    void QuitarFiltros()
-    {
+    void QuitarFiltros() {
         indexSelect = 0;
         criterioDeBusqueda = "";
         _ = FiltarVentas();
     }
 
-    void Eliminar(Ventas ventas)
-    {
+    async Task Eliminar(Ventas ventas) {
         bool eliminado;
 
-        eliminado =  VentasBLL.Eliminar(ventas.VentaId);
+        eliminado = await VentasBLL.Eliminar(ventas.VentaId);
 
-        if (eliminado)
-        {
+        if (eliminado) {
             toast.ShowSuccess("Eliminado");
-        }
-        else
+        } else
             toast.ShowError("Error al eliminar");
     }
 
-    async Task FiltarVentas()
-    {
+    async Task FiltarVentas() {
 
-        if (indexSelect == 0)
-        {//Todos
+        if (indexSelect == 0) {//Todos
             expressionFiltrado = c => true;
 
-        }
-        else if (indexSelect == 1)
-        {//Id
+        } else if (indexSelect == 1) {//Id
 
-            if (int.TryParse(criterioDeBusqueda, out int Id))
-            {
+            if (int.TryParse(criterioDeBusqueda , out int Id)) {
                 expressionFiltrado = c => c.VentaId == Id;
-            }
-            else
-            {
+            } else {
                 expressionFiltrado = c => true;
             }
         }

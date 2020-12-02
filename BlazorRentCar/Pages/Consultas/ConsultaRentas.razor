@@ -88,10 +88,6 @@
     [Inject]
     public RentasBLL RentasBLL { get; set; }
 
-    bool MostraDialogoEditor = false;
-    bool EsNuevoRenta = false;
-    string Title;
-
     Paginacion PaginacionActual = new Paginacion();
     int RentasTotalesFiltradas;
     Expression<Func<Renta , bool>> expressionFiltrado = c => true;

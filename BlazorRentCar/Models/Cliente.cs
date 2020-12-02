@@ -26,6 +26,7 @@ namespace BlazorRentCar.Models {
         [Required(ErrorMessage = "Este campo es requerido")]
         [Phone(ErrorMessage = "El teléfono es invalido")]
         public string Telefono { get; set; }
+        public decimal Balance { get; set; }
         public DateTime FechaRegistro { get; set; }
 
         public Cliente(string userName) {

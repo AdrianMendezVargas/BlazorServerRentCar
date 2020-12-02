@@ -140,7 +140,15 @@
         </Body>
     </Dialogo>
 } else if (MostrarVentasDialogo) {
-
+    if (cliente != null) {
+        <Dialogo Title="Seleccione la venta" OnClose="OcultarDialogo">
+            <Body>
+                <ConsultaVentas ClienteId="cliente?.ClienteId ?? 0" ModoSeleccionVenta="true" OnVentaSelected="(Ventas v) => SeleccionarVenta(v)" />
+            </Body>
+        </Dialogo>
+    } else {
+        toast.ShowWarning("Primero seleccione el cliente");
+    }
 }
 
 
@@ -152,26 +160,7 @@
 
     Cobro cobro = new Cobro();
     Cliente cliente;
-
-
     Ventas venta;
-
-    protected async override Task OnInitializedAsync() {
-        cobro = new Cobro();
-
-        //TODO: quitar asignacion
-        venta = new Ventas("styles") {
-            VentaId = 1 ,
-            ClienteId = 1 ,
-            Comentarios = "comment" ,
-            VehiculoId = 1
-        };
-
-        for (int i = 0 ; i < 10 ; i++) {
-            venta.AgregarCuota(new Cuota(1000) { CuotaId = i + 1 });
-        }
-        cobro.VentaId = venta.VentaId;
-    }
 
     List<Cuota> CuotasAPagar = new List<Cuota>();
 
@@ -181,6 +170,11 @@
     void SeleccionarCliente(Cliente _cliente) {
         cliente = _cliente;
         venta = null;
+        OcultarDialogo();
+    }
+
+    void SeleccionarVenta(Ventas _venta) {
+        venta = _venta;
         OcultarDialogo();
     }
 
