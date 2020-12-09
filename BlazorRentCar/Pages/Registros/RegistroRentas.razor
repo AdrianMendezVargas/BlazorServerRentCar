@@ -33,13 +33,16 @@
                     <div class="card-body mb-3">
                         <div class="form-group row mb-0">
                             <div class="col-sm mt-1">
-                                <input value="@cliente?.Nombres" readonly placeholder="Nombres" class="form-control m-0" />
+                                <label>Nombres</label>
+                                <input value="@cliente?.Nombres" readonly class="form-control m-0" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@cliente?.Apellidos" readonly placeholder="Apellidos" class="form-control" />
+                                <label>Apellidos</label>
+                                <input value="@cliente?.Apellidos" readonly class="form-control" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@cliente?.Email" readonly placeholder="Email" class="form-control m-0" />
+                                <label>Email</label>
+                                <input value="@cliente?.Email" readonly class="form-control m-0" />
                             </div>
                         </div>
                         @if (cliente == null) {
@@ -60,24 +63,30 @@
                     <div class="card-body mb-3">
                         <div class="form-group row mb-0">
                             <div class="col-sm mt-1">
-                                <input value="@vehiculo?.Marca" readonly placeholder="Marca" class="form-control m-0" />
+                                <label>Marca</label>
+                                <input value="@vehiculo?.Marca" readonly class="form-control m-0" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@vehiculo?.Modelo" readonly placeholder="Modelo" class="form-control" />
+                                <label>Modelo</label>
+                                <input value="@vehiculo?.Modelo" readonly class="form-control" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@vehiculo?.AñoFabricacion.Year" readonly placeholder="Año" class="form-control m-0" />
+                                <label>A&ntilde;o</label>
+                                <input value="@vehiculo?.AñoFabricacion.Year" readonly class="form-control m-0" />
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-sm mt-1">
-                                <input value="@vehiculo?.PrecioDia" readonly placeholder="Precio por dia" class="form-control m-0" />
+                                <label>Precio por d&iacute;a</label>
+                                <input value="@vehiculo?.PrecioDia" readonly  class="form-control m-0" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@vehiculo?.Tipo" readonly placeholder="Tipo" class="form-control" />
+                                <label>Tipo</label>
+                                <input value="@vehiculo?.Tipo" readonly class="form-control" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@vehiculo?.Pasajeros" readonly placeholder="Pasajeros" class="form-control m-0" />
+                                <label>Pasajeros</label>
+                                <input value="@vehiculo?.Pasajeros" readonly class="form-control m-0" />
                             </div>
                         </div>
                         @if (vehiculo == null) {
@@ -246,17 +255,17 @@
 
     async Task Eliminar() {
 
-     
 
-            bool eliminado = await RentasBLL.Eliminar(renta.RentaId);
 
-            if (eliminado) {
-                toast.ShowSuccess("Eliminado");
-                Nuevo();
-            } else
-                toast.ShowError("Error al eliminar");
+        bool eliminado = await RentasBLL.Eliminar(renta.RentaId);
 
-     
+        if (eliminado) {
+            toast.ShowSuccess("Eliminado");
+            Nuevo();
+        } else
+            toast.ShowError("Error al eliminar");
+
+
 
     }
 

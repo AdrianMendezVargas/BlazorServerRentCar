@@ -28,13 +28,16 @@
                     <div class="card-body mb-3">
                         <div class="form-group row mb-0">
                             <div class="col-sm mt-1">
-                                <input value="@cliente?.Nombres" readonly placeholder="Nombres" class="form-control m-0" />
+                                <label>Nombres</label>
+                                <input value="@cliente?.Nombres" readonly class="form-control m-0" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@cliente?.Apellidos" readonly placeholder="Apellidos" class="form-control" />
+                                <label>Apellidos</label>
+                                <input value="@cliente?.Apellidos" readonly class="form-control" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@cliente?.Email" readonly placeholder="Email" class="form-control m-0" />
+                                <label>Email</label>
+                                <input value="@cliente?.Email" readonly class="form-control m-0" />
                             </div>
                         </div>
                         @if (cliente == null) {
@@ -55,23 +58,30 @@
                     <div class="card-body mb-3">
                         <div class="form-group row mb-0">
                             <div class="col-sm mt-1">
-                                <input value="@venta?.VentaId" readonly placeholder="Id" class="form-control m-0" />
+                                <label>VentaId</label>
+                                <input value="@venta?.VentaId" readonly class="form-control m-0" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@venta?.Monto.ToString("C")" readonly placeholder="Mondo" class="form-control" />
+                                <label>Monto</label>
+                                <input value="@venta?.Monto.ToString("C")" readonly class="form-control" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@venta?.Balance.ToString("C")" readonly placeholder="Balance" class="form-control m-0" />
+                                <label>Balance</label>
+                                <input value="@venta?.Balance.ToString("C")" readonly  class="form-control m-0" />
                             </div>
                         </div>
                         <div class="form-group row mb-0">
                             <div class="col-sm mt-1">
-                                <input value="@venta?.Balance" readonly placeholder="Balance" class="form-control m-0" />
+                                <label>VehiculoId</label>
+                                <input value="@venta?.VehiculoId" readonly class="form-control" />
                             </div>
                             <div class="col-sm mt-1">
-                                <input value="@venta?.VehiculoId" readonly placeholder="VehiculoId" class="form-control" />
-                            </div><div class="col-sm mt-1">
-                                <input value="@venta?.Fecha" readonly placeholder="Fecha" class="form-control" />
+                                <label>Fecha</label>
+                                <input value="@venta?.Fecha.ToShortDateString()" readonly class="form-control" />
+                            </div>
+                            <div class="col-sm mt-1">
+                                <label>Comentario</label>
+                                <input value="@venta?.Comentarios" readonly class="form-control m-0" />
                             </div>
                         </div>
                         @if (venta == null) {
