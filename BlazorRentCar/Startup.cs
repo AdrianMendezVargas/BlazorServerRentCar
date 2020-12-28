@@ -32,8 +32,8 @@ namespace BlazorRentCar {
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services) {
             services.AddDbContext<Contexto>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
+                options.UseSqlite(
+                    "Data source=Data\\CodeRentCarDB.db") , ServiceLifetime.Transient);
 
             services.AddDefaultIdentity<Usuarios>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddRoles<IdentityRole<string>>()
